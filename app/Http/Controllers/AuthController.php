@@ -53,7 +53,7 @@ class AuthController extends Controller
                 'email' => 'required|string|email|max:255|unique:users',
                 'phoneNumber' => 'required|digits:8|unique:users',
                 'password' => 'required|string|min:6',
-                'role' => 'in:Super admin, manager, resellerA, resellerB',
+                'role' => 'in:resellerB, manager, resellerA, SuperAdmin',
                 'verified' => 'boolean',
                 'lbpBalance' => 'integer',
                 'usdBalance' => 'integer',

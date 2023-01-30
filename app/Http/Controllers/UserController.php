@@ -6,33 +6,56 @@ use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
  
     public function index()  // show all
     {
-        return User::all();
+        $user = User::all();
+
+        return response()->json([
+            'status' => true,
+            'data' => $user], 201);
     }
 
  
     public function store(Request $request)  // save data
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
-            'age' => 'required|integer',
+            'name' => 'required|string|max:255',
+            'email' => 'string|email|max:255|unique:users',
+            'phoneNumber' => 'required|digits:8|unique:users',
+            'password' => 'required|string|min:6',
+            'role' => Rule::in(['resellerA', 'manager', 'resellerB']),
+            'verified' => 'boolean',
+            'lbpBalance' => 'integer',
+            'usdBalance' => 'integer',
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
+            return response()->json([
+                'status' => false,
+                'message' => $validator->errors()], 400);
         }
 
-        $example = new ExampleModel;
+        $example = new User;
         $example->name = $request->name;
-        $example->age = $request->age;
+        $example->email = $request->email;
+        $example->phoneNumber = $request->phoneNumber;
+        $example->password = Hash::make($request->password);
+        $example->role = $request->role;
+        $example->verified = $request->verified;
+        $example->email = $request->email;
+        $example->lbpBalance = $request->lbpBalance;
+        $example->usdBalance = $request->usdBalance;
         $example->save();
 
-        return response()->json(['message' => 'Successfully created example.'], 201);
+        return response()->json([
+            'status' => true,
+            'message' => 'Successfully created user'], 201);
     }
 
 
@@ -41,10 +64,15 @@ class UserController extends Controller
         $example = User::find($id);
 
         if (!$example) {
-            return response()->json(['error' => 'User not found.'], 404);
+            return response()->json([
+                'status' => false,
+                'message' => 'User not found'], 404);
         }
 
-        return $example;
+        return response()->json([
+            'status' => true,
+            'message' => 'User found',
+            'data' => $example ], 404);
     }
 
  
@@ -54,20 +82,19 @@ class UserController extends Controller
             'name' => 'string|max:255',
             'email' => 'string|email|max:255|unique:users',
             'phoneNumber' => 'digits:8|unique:users',
-            'role' => 'in:Super admin, manager, resellerA, resellerB',
+            'role' => Rule::in(['resellerA', 'manager', 'resellerB']),
             'verified' => 'boolean',
             'lbpBalance' => 'integer',
             'usdBalance' => 'integer',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 400);
-        }
-
+      
         $example = User::find($id);
 
         if (!$example) {
-            return response()->json(['error' => 'User not found.'], 404);
+            return response()->json([
+                'status' => false,
+                'message' => 'User failed to update'], 404);
         }
 
         $example->name = $request->name ?? $example->name;
@@ -80,7 +107,9 @@ class UserController extends Controller
         $example->usdBalance = $request->usdBalance ?? $example->usdBalance;
         $example->save();
 
-        return response()->json(['message' => 'Successfully updated user.'], 200);
+        return response()->json([
+            'status' => true,
+            'message' => 'Successfully updated user'], 200);
     }
 
 
@@ -89,11 +118,15 @@ class UserController extends Controller
         $example = User::find($id);
 
         if (!$example) {
-            return response()->json(['error' => 'User not found.'], 404);
+            return response()->json([
+                'status' => false,
+                'message' => `User can't be deleted`], 404);
         }
 
         $example->delete();
 
-        return response()->json(['message' => 'Successfully deleted user.'], 200);
+        return response()->json([
+            'status' => true,
+            'message' => 'Successfully deleted user'], 200);
     }
     }

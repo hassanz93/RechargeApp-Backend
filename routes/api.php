@@ -31,7 +31,7 @@ Route::controller(AuthController::class)->group(function () {
 Route::get('admin/user' , [UserController::class, 'index']);
 Route::post('admin/user', [UserController::class, 'store']);
 Route::get('admin/user/{id}', [UserController::class, 'show']);
-Route::put('admin/user/{id}', [UserController::class, 'update']);
+Route::patch('admin/user/{id}', [UserController::class, 'update']);
 Route::delete('admin/user/{id}', [UserController::class, 'destroy']);
 
 

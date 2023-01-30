@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('email', 500)->unique();
             $table->integer('phoneNumber')->unique();
             $table->string('password', 500);
-            $table->enum('role', ['Super admin', 'manager', 'resellerA', 'resellerB'])->default('resellerB');
+            $table->enum('role', ['resellerB','manager','resellerA','SuperAdmin']);
             $table->boolean('verified')->default(0);
             $table->integer('lbpBalance')->default(0);
             $table->integer('usdBalance')->default(0);
