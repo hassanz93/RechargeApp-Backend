@@ -58,6 +58,37 @@ class UserController extends Controller
             'message' => 'Successfully created user'], 201);
     }
 
+    public function addCsv(Request $request)
+{
+
+    $validator = Validator::make($request->all(), [
+        'name' => 'string|max:255',
+        'email' => 'string|email|max:255|unique:users',
+        'phoneNumber' => 'digits:8|unique:users',
+        'password' => 'string|min:6',
+        'role' => Rule::in(['resellerA', 'manager', 'resellerB']),
+        'verified' => 'boolean',
+        'lbpBalance' => 'integer',
+        'usdBalance' => 'integer',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'status' => false,
+            'message' => $validator->errors()], 400);
+    }
+
+    $users = $request->json()->all();
+    
+    foreach ($users as $user) {
+        User::create($user);
+    }
+
+    return response()->json([
+        'status' => true,
+        'message' => 'All Users have been added'], 201);
+}
+
 
     public function show($id) // save one data
     {
@@ -72,7 +103,7 @@ class UserController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'User found',
-            'data' => $example ], 404);
+            'data' => $example ], 201);
     }
 
  
@@ -128,5 +159,15 @@ class UserController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Successfully deleted user'], 200);
+    }
+
+    public function destroyMultiple(Request $request){
+
+
+            Post::destroy($request->ids);
+
+            return response()->json([
+                'message'=>"Users Deleted successfully."
+            ],200);   
     }
     }

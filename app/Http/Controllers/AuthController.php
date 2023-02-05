@@ -28,7 +28,7 @@ class AuthController extends Controller
         if ( !$token ){
             return response()->json([
                 'status' => false,
-                'message' => 'unauthorized',
+                'message' => 'Unauthorized, try to login again',
             ], 401 );
         }
         
@@ -36,6 +36,7 @@ class AuthController extends Controller
 
         return response()->json([
             'status' => true,
+            'message' => 'Login Successfully',
             'data' => json_encode([
                 'user' => $user,
                     'authorisation' => [
@@ -91,7 +92,7 @@ class AuthController extends Controller
 
             return response()->json([
                 'status' => true,
-                'message' => 'loggedOut',
+                'message' => 'Signed Out Successfully',
             ]);
         }
             

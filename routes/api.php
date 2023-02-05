@@ -30,6 +30,7 @@ Route::controller(AuthController::class)->group(function () {
 
 Route::get('admin/user' , [UserController::class, 'index']);
 Route::post('admin/user', [UserController::class, 'store']);
+Route::post('admin/userCSV', [UserController::class, 'addCsv']);
 Route::get('admin/user/{id}', [UserController::class, 'show']);
 Route::patch('admin/user/{id}', [UserController::class, 'update']);
 Route::delete('admin/user/{id}', [UserController::class, 'destroy']);
