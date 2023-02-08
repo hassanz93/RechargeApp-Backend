@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
-
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PhoneCardsCatgeoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +35,10 @@ Route::post('admin/userCSV', [UserController::class, 'addCsv']);
 Route::get('admin/user/{id}', [UserController::class, 'show']);
 Route::patch('admin/user/{id}', [UserController::class, 'update']);
 Route::delete('admin/user/{id}', [UserController::class, 'destroy']);
+
+Route::get('main/home', [HomeController:: class, 'index']);
+
+Route::get('main/phoneCardCategory', [PhoneCardsCatgeoryController:: class, 'index']);
 
 
 
