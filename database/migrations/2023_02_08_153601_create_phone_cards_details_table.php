@@ -17,11 +17,11 @@ return new class extends Migration
             $table->id();
             $table->string('name', 50);
             $table->foreignId('categoryId');
-            $table->string('type', 50);
-            $table->string('dollarPrice', 50);
-            $table->string('lbpPrice', 50);
-            $table->string('imageUrl', 500);
-            $table->string('quantity', 500);
+            $table->enum('type', ['Magic','Start','Smart']);
+            $table->integer('dollarPrice');
+            $table->integer('validity');
+            $table->integer('grace');
+            $table->timestamp('expiryDate');
             $table->timestamps();
         });
 

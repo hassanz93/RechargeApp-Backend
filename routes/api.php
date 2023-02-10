@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PhoneCardsCatgeoryController;
+use App\Http\Controllers\PhoneCardsDetailsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,6 +40,8 @@ Route::delete('admin/user/{id}', [UserController::class, 'destroy']);
 Route::get('main/home', [HomeController:: class, 'index']);
 
 Route::get('main/phoneCardCategory', [PhoneCardsCatgeoryController:: class, 'index']);
+
+Route::get('main/phoneCardDetails', [PhoneCardsDetailsController:: class, 'index']);
 
 
 

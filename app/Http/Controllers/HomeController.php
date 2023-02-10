@@ -10,10 +10,10 @@ class HomeController extends Controller
 {
     public function index()  // show all
     {
-        $user = Home::all();
+        $home = Home::all();
 
         return response()->json([
             'status' => true,
-            'data' => $user], 201);
+            'data' => $home], 201);
     }
 }

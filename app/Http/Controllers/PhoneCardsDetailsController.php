@@ -2,18 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PhoneCardsDetails;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\PhoneCardsCategory;
 
-class PhoneCardsCatgeoryController extends Controller
+class PhoneCardsDetailsController extends Controller
 {
+
     public function index()  // show all
     {
-        $phoneCategory = PhoneCardsCategory::all();
+        $phoneDetails = PhoneCardsDetails::all();
 
         return response()->json([
             'status' => true,
-            'data' => $phoneCategory], 201);
+            'data' => $phoneDetails], 201);
     }
+
+
+
+
+
+ 
 }
