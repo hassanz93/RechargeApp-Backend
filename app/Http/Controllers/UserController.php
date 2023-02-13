@@ -21,7 +21,15 @@ class UserController extends Controller
             'data' => $user], 201);
     }
 
- 
+    public function showId($id)  // show one
+    {
+        $user = User::find($id);
+
+        return response()->json([
+            'status' => true,
+            'data' => $user], 201);
+    }
+
     public function store(Request $request)  // save data
     {
         $validator = Validator::make($request->all(), [

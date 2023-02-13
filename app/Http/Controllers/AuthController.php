@@ -51,7 +51,7 @@ class AuthController extends Controller
 
             $request->validate([
                 'name' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255|unique:users',
+                'email' => 'string|email|max:255|unique:users',
                 'phoneNumber' => 'required|digits:8|unique:users',
                 'password' => 'required|string|min:6',
                 'role' => 'in:resellerB, manager, resellerA, SuperAdmin',

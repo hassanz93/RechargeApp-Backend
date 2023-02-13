@@ -31,6 +31,7 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 Route::get('admin/user' , [UserController::class, 'index']);
+Route::get('admin/user/{id}' , [UserController::class, 'showId']);
 Route::post('admin/user', [UserController::class, 'store']);
 Route::post('admin/userCSV', [UserController::class, 'addCsv']);
 Route::get('admin/user/{id}', [UserController::class, 'show']);
