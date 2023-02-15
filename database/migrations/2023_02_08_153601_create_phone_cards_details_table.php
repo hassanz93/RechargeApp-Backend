@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('name', 50);
             $table->foreignId('categoryId');
-            $table->enum('type', ['Magic','Start','Smart']);
+            $table->enum('type', ['Magic','Start','Smart','Alpha']);
             $table->integer('dollarPrice');
             $table->integer('validity');
             $table->integer('grace');

@@ -172,7 +172,7 @@ class UserController extends Controller
     public function destroyMultiple(Request $request){
 
 
-            Post::destroy($request->ids);
+        User::destroy($request->ids);
 
             return response()->json([
                 'message'=>"Users Deleted successfully."
