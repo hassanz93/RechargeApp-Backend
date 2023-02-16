@@ -8,5 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class PhoneCardsDetails extends Model
 {
     use HasFactory;
-    protected $table = 'phone_cards_details';
+
+
+      protected $fillable = [
+        'name',
+        'categoryId',
+        'type',
+        'dollarPrice',
+        'validity' ,
+        'purchaseQuantity',
+        'grace',
+    ];
 }

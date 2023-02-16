@@ -53,6 +53,37 @@ class PhoneCardsDetailsController extends Controller
             'message' => 'Successfully created item'], 201);
     }
 
+    public function addCsv(Request $request)
+{
+
+    $validator = Validator::make($request->all(), [
+        'name' => 'string',
+        'categoryId' => Rule::in([1,2]),
+        'type' => Rule::in(['Magic','Start','Smart','Alpha']),
+        'dollarPrice' => 'integer',
+        'validity' => 'integer',
+        'purchaseQuantity' => 'integer',
+        'grace' => 'integer',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'status' => false,
+            'message' => $validator->errors()], 400);
+    }
+
+    $cards = $request->json()->all();
+    
+    foreach ($cards as $card) {
+        PhoneCardsDetails::create($card);
+    }
+
+    return response()->json([
+        'status' => true,
+        'message' => 'All Cards have been added'], 201);
+}
+
+
     public function update(Request $request, $id)  // update data
     {
         $validator = Validator::make($request->all(), [

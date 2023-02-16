@@ -21,7 +21,6 @@ return new class extends Migration
             $table->integer('dollarPrice');
             $table->integer('validity');
             $table->integer('grace');
-            $table->timestamp('expiryDate');
             $table->timestamps();
         });
 
