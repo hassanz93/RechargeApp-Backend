@@ -147,9 +147,5 @@ class PhoneCardsDetailsController extends Controller
         ],200);   
 }
 
-
-
-
-
  
 }
