@@ -24,7 +24,7 @@ class PhoneCardIndividualController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:225',
             'cardDetailsId' => 'required|integer',
-            'code' => 'required|integer',
+            'code' => 'required|integer|digits:14',
             'expiryDate' => 'required|date',
             'status' => Rule::in(['Available','Expired','Sold'])
         ]);
@@ -32,7 +32,8 @@ class PhoneCardIndividualController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'status' => false,
-                'message' => $validator->errors()], 400);
+                'message' => $validator-> errors()->first()
+          ], 400);
         }
 
         $example = new PhoneCardIndividual;
@@ -54,15 +55,15 @@ class PhoneCardIndividualController extends Controller
     $validator = Validator::make($request->all(), [
         'name' => 'string|max:225',
         'cardDetailsId' => 'integer',
-        'code' => 'integer',
-        'expiryDate' => 'date',
+        'code' => 'integer|digits:14',
+        'expiryDate' => 'string',
         'status' => Rule::in(['Available','Expired','Sold'])
     ]);
 
     if ($validator->fails()) {
         return response()->json([
             'status' => false,
-            'message' => $validator->errors()], 400);
+            'message' => $validator-> errors()->first()], 400);
     }
 
     $cards = $request->json()->all();
@@ -82,7 +83,7 @@ class PhoneCardIndividualController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:225',
             'cardDetailsId' => 'required|integer',
-            'code' => 'required|integer',
+            'code' => 'required|integer|digits:14',
             'expiryDate' => 'required|date',
             'status' => Rule::in(['Available','Expired','Sold'])
         ]);

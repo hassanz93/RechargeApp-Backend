@@ -35,7 +35,7 @@ class PhoneCardsDetailsController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'status' => false,
-                'message' => $validator->errors()], 400);
+                'message' => $validator->errors()->first()], 400);
         }
 
         $example = new PhoneCardsDetails;
@@ -69,7 +69,7 @@ class PhoneCardsDetailsController extends Controller
     if ($validator->fails()) {
         return response()->json([
             'status' => false,
-            'message' => $validator->errors()], 400);
+            'message' => $validator->errors()->first()], 400);
     }
 
     $cards = $request->json()->all();

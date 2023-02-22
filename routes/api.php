@@ -8,6 +8,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PhoneCardsCatgeoryController;
 use App\Http\Controllers\PhoneCardsDetailsController;
 use App\Http\Controllers\PhoneCardIndividualController;
+use App\Http\Controllers\TransactionHistoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -56,6 +57,12 @@ Route::post('admin/IndividualCardDetails', [PhoneCardIndividualController:: clas
 Route::post('admin/IndividualCardDetailsCSV', [PhoneCardIndividualController::class, 'addCsv']);
 Route::patch('admin/IndividualCardDetails/{id}', [PhoneCardIndividualController:: class, 'update']);
 Route::delete('admin/IndividualCardDetails/{id}', [PhoneCardIndividualController:: class, 'destroy']);
+
+// Transactions History
+Route::get('admin/transactionsHistory', [TransactionHistoryController:: class, 'index']);
+Route::get('admin/transactionsHistory/{userId}' , [TransactionHistoryController::class, 'showId']);
+Route::post('admin/transactionsHistory', [TransactionHistoryController:: class, 'store']);
+
 
 
 
