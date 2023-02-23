@@ -9,7 +9,7 @@ use App\Http\Controllers\PhoneCardsCatgeoryController;
 use App\Http\Controllers\PhoneCardsDetailsController;
 use App\Http\Controllers\PhoneCardIndividualController;
 use App\Http\Controllers\TransactionHistoryController;
-
+use App\Http\Controllers\ExchangeRateController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -62,6 +62,9 @@ Route::delete('admin/IndividualCardDetails/{id}', [PhoneCardIndividualController
 Route::get('admin/transactionsHistory', [TransactionHistoryController:: class, 'index']);
 Route::get('admin/transactionsHistory/{userId}' , [TransactionHistoryController::class, 'showId']);
 Route::post('admin/transactionsHistory', [TransactionHistoryController:: class, 'store']);
+
+Route::get('admin/exchangeRate', [ExchangeRateController:: class, 'index']);
+Route::patch('admin/exchangeRate/{id}', [ExchangeRateController:: class, 'update']);
 
 
 
