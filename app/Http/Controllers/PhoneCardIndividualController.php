@@ -22,7 +22,7 @@ class PhoneCardIndividualController extends Controller
     public function store(Request $request)  // save data
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:225',
+            'serial' => 'required|integer',
             'cardDetailsId' => 'required|integer',
             'code' => 'required|integer|digits:14',
             'expiryDate' => 'required|date',
@@ -37,7 +37,7 @@ class PhoneCardIndividualController extends Controller
         }
 
         $example = new PhoneCardIndividual;
-        $example->name = $request->name;
+        $example->serial = $request->serial;
         $example->cardDetailsId = $request->cardDetailsId;
         $example->code = $request->code;
         $example->expiryDate =$request->expiryDate;
@@ -53,7 +53,7 @@ class PhoneCardIndividualController extends Controller
 {
 
     $validator = Validator::make($request->all(), [
-        'name' => 'string|max:225',
+        'serial' => 'integer',
         'cardDetailsId' => 'integer',
         'code' => 'integer|digits:14',
         'expiryDate' => 'string',
@@ -81,14 +81,19 @@ class PhoneCardIndividualController extends Controller
     public function update(Request $request, $id)  // update data
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:225',
+            'serial' => 'required|integer',
             'cardDetailsId' => 'required|integer',
             'code' => 'required|integer|digits:14',
             'expiryDate' => 'required|date',
             'status' => Rule::in(['Available','Expired','Sold'])
         ]);
 
-      
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => $validator-> errors()->first()], 400);
+        }
+
         $example = PhoneCardIndividual::find($id);
 
         if (!$example) {
@@ -97,7 +102,7 @@ class PhoneCardIndividualController extends Controller
                 'message' => 'Card failed to update'], 404);
         }
 
-        $example->name = $request->name;
+        $example->serial = $request->serial;
         $example->cardDetailsId = $request->cardDetailsId;
         $example->code = $request->code;
         $example->expiryDate =$request->expiryDate;

@@ -21,12 +21,14 @@ return new class extends Migration
             $table->integer('dollarPrice');
             $table->integer('validity');
             $table->integer('grace');
+            $table->integer('stockQuantity')->default(0);
             $table->timestamps();
         });
 
         Schema::table('phone_cards_details', function (Blueprint $table) {
             $table->foreign('categoryId')->references('id')->on('phone_cards_category')->onDelete('cascade');
         });
+ 
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PhoneCardsDetails;
+use App\Models\PhoneCardIndividual;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -10,6 +11,7 @@ use Illuminate\Validation\Rule;
 
 class PhoneCardsDetailsController extends Controller
 {
+   
 
     public function index()  // show all
     {
@@ -20,6 +22,20 @@ class PhoneCardsDetailsController extends Controller
             'data' => $phoneDetails], 201);
     }
 
+    public function getstock()
+    {
+        $indivDetailsCount = PhoneCardIndividual::all()->count();
+        $indivDetails = PhoneCardIndividual::all();
+        $indivDetails1 = [];
+        for($id = 1;$id <= $indivDetailsCount;$id++){
+            $indivDetails1[$id-1] = collect($indivDetails)->where('status', 'Available')->where('cardDetailsId', $id);
+        }
+
+        return response()->json([
+            'status' => true,
+            'data' => $indivDetails1], 201);
+    }
+
     public function store(Request $request)  // save data
     {
         $validator = Validator::make($request->all(), [
@@ -28,8 +44,8 @@ class PhoneCardsDetailsController extends Controller
             'type' => Rule::in(['Magic','Start','Smart','Alpha']),
             'dollarPrice' => 'required|integer',
             'validity' => 'required|integer',
-            'purchaseQuantity' => 'integer',
             'grace' => 'required|integer',
+            'stockQuantity' => 'required|integer',
         ]);
 
         if ($validator->fails()) {
@@ -44,8 +60,8 @@ class PhoneCardsDetailsController extends Controller
         $example->type = $request->type;
         $example->dollarPrice =$request->dollarPrice;
         $example->validity = $request->validity;
-        $example->purchaseQuantity = $request->purchaseQuantity;
         $example->grace = $request->grace;
+        $example->stockQuantity = $request->stockQuantity;
         $example->save();
 
         return response()->json([
@@ -62,8 +78,8 @@ class PhoneCardsDetailsController extends Controller
         'type' => Rule::in(['Magic','Start','Smart','Alpha']),
         'dollarPrice' => 'integer',
         'validity' => 'integer',
-        'purchaseQuantity' => 'integer',
         'grace' => 'integer',
+        'stockQuantity' => 'integer',
     ]);
 
     if ($validator->fails()) {
@@ -87,14 +103,20 @@ class PhoneCardsDetailsController extends Controller
     public function update(Request $request, $id)  // update data
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
+            'name' => 'string|max:255',
             'categoryId' => Rule::in([1,2]),
             'type' => Rule::in(['Magic','Start','Smart','Alpha']),
-            'dollarPrice' => 'required|integer',
-            'validity' => 'required|integer',
-            'purchaseQuantity' => 'integer',
-            'grace' => 'required|integer',
+            'dollarPrice' => 'integer',
+            'validity' => 'integer',
+            'grace' => 'integer',
+            'stockQuantity' => 'required|integer',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => $validator->errors()->first()], 400);
+        }
 
       
         $example = PhoneCardsDetails::find($id);
@@ -110,8 +132,8 @@ class PhoneCardsDetailsController extends Controller
         $example->type = $request->type ?? $example->type;
         $example->dollarPrice = $request->dollarPrice ?? $example->dollarPrice;
         $example->validity = $request->validity ?? $example->validity;
-        $example->purchaseQuantity = $request->purchaseQuantity ?? $example->purchaseQuantity;
         $example->grace = $request->grace ?? $example->grace;
+        $example->stockQuantity = $request->stockQuantity ?? $example->stockQuantity;
         $example->save();
 
         return response()->json([

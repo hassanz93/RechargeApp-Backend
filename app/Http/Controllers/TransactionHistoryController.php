@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Auth;
+use DB;
 
 class TransactionHistoryController extends Controller
 {
@@ -19,9 +21,11 @@ class TransactionHistoryController extends Controller
             'data' => $historyDetails], 201);
     }
 
-    public function show($userId)  // show one
+    public function showId($id)  // show one
     {
-        $history = TransactionHistory::find($userId);
+        $historyDetails = TransactionHistory::all();
+
+        $history = collect($historyDetails)->where('userId', $id)->all();
 
         return response()->json([
             'status' => true,

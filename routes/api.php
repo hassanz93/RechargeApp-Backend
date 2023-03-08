@@ -46,6 +46,7 @@ Route::get('main/phoneCardCategory', [PhoneCardsCatgeoryController:: class, 'ind
 
 //  Card Details that are shown to clients to sell
 Route::get('admin/phoneCardDetails', [PhoneCardsDetailsController:: class, 'index']);
+Route::get('admin/phoneCardStock', [PhoneCardsDetailsController:: class, 'getstock']);
 Route::post('admin/phoneCardDetails', [PhoneCardsDetailsController:: class, 'store']);
 Route::post('admin/userCSV', [PhoneCardsDetailsController::class, 'addCsv']);
 Route::patch('admin/phoneCardDetails/{id}', [PhoneCardsDetailsController:: class, 'update']);
@@ -60,7 +61,7 @@ Route::delete('admin/IndividualCardDetails/{id}', [PhoneCardIndividualController
 
 // Transactions History
 Route::get('admin/transactionsHistory', [TransactionHistoryController:: class, 'index']);
-Route::get('admin/transactionsHistory/{userId}' , [TransactionHistoryController::class, 'showId']);
+Route::get('admin/transactionsHistory/{id}' , [TransactionHistoryController::class, 'showId']);
 Route::post('admin/transactionsHistory', [TransactionHistoryController:: class, 'store']);
 
 Route::get('admin/exchangeRate', [ExchangeRateController:: class, 'index']);
