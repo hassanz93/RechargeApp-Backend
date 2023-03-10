@@ -21,7 +21,6 @@ return new class extends Migration
             $table->integer('dollarPrice');
             $table->integer('validity');
             $table->integer('grace');
-            $table->integer('stockQuantity')->default(0);
             $table->timestamps();
         });
 
