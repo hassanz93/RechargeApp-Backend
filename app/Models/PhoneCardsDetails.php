@@ -18,5 +18,6 @@ class PhoneCardsDetails extends Model
         'validity' ,
         'purchaseQuantity',
         'grace',
+        'show'
     ];
 }

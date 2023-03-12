@@ -58,6 +58,7 @@ Route::post('admin/IndividualCardDetails', [PhoneCardIndividualController:: clas
 Route::post('admin/IndividualCardDetailsCSV', [PhoneCardIndividualController::class, 'addCsv']);
 Route::patch('admin/IndividualCardDetails/{id}', [PhoneCardIndividualController:: class, 'update']);
 Route::delete('admin/IndividualCardDetails/{id}', [PhoneCardIndividualController:: class, 'destroy']);
+Route::get('admin/PurchaseCardDetails/{id}/{quantity}', [PhoneCardIndividualController:: class, 'purchase']);
 
 // Transactions History
 Route::get('admin/transactionsHistory', [TransactionHistoryController:: class, 'index']);

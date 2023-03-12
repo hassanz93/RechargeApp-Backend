@@ -140,5 +140,22 @@ class PhoneCardIndividualController extends Controller
             'status' => true,
             'message'=>"Items Deleted successfully."
         ],200);   
-}
+    }
+
+        public function purchase( $id, $quantity) {
+
+
+
+            $example = PhoneCardIndividual::where('cardDetailsId', $id)
+        ->orderBy('expiryDate') // assuming you want to order by expiryDate
+        ->select(['id', 'serial', 'code', 'expiryDate' ])
+        ->take($quantity) // assuming you want to return only 5 records per ID
+        ->get();
+
+  
+    return response()->json([
+        'status' => true,
+        'data' =>  $example], 200);
+
+    }
 }

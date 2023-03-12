@@ -45,6 +45,7 @@ class PhoneCardsDetailsController extends Controller
             'dollarPrice' => 'required|integer',
             'validity' => 'required|integer',
             'grace' => 'required|integer',
+            'show' => Rule::in(['Enable','Disable'])
         ]);
 
         if ($validator->fails()) {
@@ -60,6 +61,7 @@ class PhoneCardsDetailsController extends Controller
         $example->dollarPrice =$request->dollarPrice;
         $example->validity = $request->validity;
         $example->grace = $request->grace;
+        $example->show = $request->show;
         $example->save();
 
         return response()->json([
@@ -77,6 +79,7 @@ class PhoneCardsDetailsController extends Controller
         'dollarPrice' => 'integer',
         'validity' => 'integer',
         'grace' => 'integer',
+        'show' => Rule::in(['Enable','Disable'])
     ]);
 
     if ($validator->fails()) {
@@ -106,6 +109,7 @@ class PhoneCardsDetailsController extends Controller
             'dollarPrice' => 'integer',
             'validity' => 'integer',
             'grace' => 'integer',
+            'show' => Rule::in(['Enable','Disable'])
         ]);
 
         if ($validator->fails()) {
@@ -129,6 +133,7 @@ class PhoneCardsDetailsController extends Controller
         $example->dollarPrice = $request->dollarPrice ?? $example->dollarPrice;
         $example->validity = $request->validity ?? $example->validity;
         $example->grace = $request->grace ?? $example->grace;
+        $example->show = $request->show ?? $example->show;
         $example->save();
 
         return response()->json([
