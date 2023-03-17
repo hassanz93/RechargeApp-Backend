@@ -77,6 +77,34 @@ class PhoneCardIndividualController extends Controller
         'message' => 'All Cards have been added'], 201);
 }
 
+public function purchaseStatus(Request $request, $id){
+
+  $validator = Validator::make($request->all(), [
+        'status' => Rule::in(['Sold'])
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'status' => false,
+            'message' => $validator-> errors()->first()], 400);
+    }
+
+     $example = PhoneCardIndividual::find($id);
+
+        if (!$example) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Card not purchased'], 404);
+        }
+
+        $example->status=$request->status;
+        $example->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Successfully purchased card'], 200);
+}
+
 
     public function update(Request $request, $id)  // update data
     {
@@ -143,8 +171,6 @@ class PhoneCardIndividualController extends Controller
     }
 
         public function purchase( $id, $quantity) {
-
-
 
             $example = PhoneCardIndividual::where('cardDetailsId', $id)
         ->orderBy('expiryDate') // assuming you want to order by expiryDate
