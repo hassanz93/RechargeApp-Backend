@@ -13,7 +13,7 @@ class PhoneCardIndividualController extends Controller
     public function index()  // show all
     {
         $cardDetail = PhoneCardIndividual::all();
-
+        $cardDetail ->makeHidden(['code']);
         return response()->json([
             'status' => true,
             'data' => $cardDetail], 201);
@@ -111,7 +111,6 @@ public function purchaseStatus(Request $request, $id){
         $validator = Validator::make($request->all(), [
             'serial' => 'required|integer',
             'cardDetailsId' => 'required|integer',
-            'code' => 'required|integer|digits:14',
             'expiryDate' => 'required|date',
             'status' => Rule::in(['Available','Expired','Sold'])
         ]);
@@ -132,7 +131,6 @@ public function purchaseStatus(Request $request, $id){
 
         $example->serial = $request->serial;
         $example->cardDetailsId = $request->cardDetailsId;
-        $example->code = $request->code;
         $example->expiryDate =$request->expiryDate;
         $example->status=$request->status;
         $example->save();
