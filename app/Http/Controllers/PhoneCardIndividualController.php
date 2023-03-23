@@ -170,9 +170,10 @@ public function purchaseStatus(Request $request, $id){
 
         public function purchase( $id, $quantity) {
 
-            $example = PhoneCardIndividual::where('cardDetailsId', $id)
+            $example = PhoneCardIndividual::where('status', 'Available')
+        ->where('cardDetailsId', $id) 
         ->orderBy('expiryDate') // assuming you want to order by expiryDate
-        ->select(['id', 'serial', 'code', 'expiryDate' ])
+        ->select(['id', 'serial', 'code', 'cardDetailsId', 'expiryDate' ])
         ->take($quantity) // assuming you want to return only 5 records per ID
         ->get();
 
