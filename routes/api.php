@@ -33,12 +33,13 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 Route::get('admin/user' , [UserController::class, 'index']);
-Route::get('admin/user/{id}' , [UserController::class, 'showId']);
 Route::post('admin/user', [UserController::class, 'store']);
 Route::post('admin/userCSV', [UserController::class, 'addCsv']);
 Route::get('admin/user/{id}', [UserController::class, 'show']);
 Route::patch('admin/user/{id}', [UserController::class, 'update']);
 Route::delete('admin/user/{id}', [UserController::class, 'destroy']);
+Route::patch('admin/setlimit/Lbp', [UserController::class, 'setLimitLBP']);
+Route::patch('admin/setlimit/Usd', [UserController::class, 'setLimitUSD']);
 
 Route::get('main/home', [HomeController:: class, 'index']);
 

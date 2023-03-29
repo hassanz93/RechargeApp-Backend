@@ -50,6 +50,7 @@ class AuthController extends Controller
         public function register( Request $request ){
 
             $request->validate([
+                'mainResellerId' => 'required|integer',
                 'name' => 'required|string|max:255',
                 'email' => 'string|email|max:255|unique:users',
                 'phoneNumber' => 'required|digits:8|unique:users',
@@ -58,17 +59,22 @@ class AuthController extends Controller
                 'verified' => 'boolean',
                 'lbpBalance' => 'integer',
                 'usdBalance' => 'integer',
+                'limitPurchaseLbp' => 'integer',
+                'limitPurchaseUsd' => 'integer'
             ]);
             
             $user = User::create([
+                'mainResellerId' => $request->mainResellerId,
                 'name' => $request->name,
                 'email' => $request->email,
                 'phoneNumber' => $request->phoneNumber,
                 'password' => Hash::make($request->password),
-                'role' => $request->role,
-                'verified' => $request->verified,
-                'lbpBalance' => $request->lbpBalance,
-                'usdBalance' => $request->usdBalance,
+                'role' => $request->role ?? 'resellerB',
+                'verified' => $request->verified ?? 0,
+                'lbpBalance' => $request->lbpBalance ?? 100000,
+                'usdBalance' => $request->usdBalance ?? 10,
+                'limitPurchaseLbp' => $request->limitPurchaseLbp ?? 5000000,
+                'limitPurchaseUsd' => $request->limitPurchaseUsd ?? 100,
             ]);
             
             $token = Auth::login( $user );

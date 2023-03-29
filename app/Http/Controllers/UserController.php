@@ -6,8 +6,10 @@ use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Console\Scheduling\Schedule;
 
 class UserController extends Controller
 {
@@ -15,15 +17,6 @@ class UserController extends Controller
     public function index()  // show all
     {
         $user = User::all();
-
-        return response()->json([
-            'status' => true,
-            'data' => $user], 201);
-    }
-
-    public function showId($id)  // show one
-    {
-        $user = User::find($id);
 
         return response()->json([
             'status' => true,
@@ -38,9 +31,9 @@ class UserController extends Controller
             'phoneNumber' => 'required|digits:8|unique:users',
             'password' => 'required|string|min:6',
             'role' => Rule::in(['resellerA', 'manager', 'resellerB']),
-            'verified' => 'boolean',
-            'lbpBalance' => 'integer',
-            'usdBalance' => 'integer',
+            'verified' => 'required|boolean',
+            'lbpBalance' => 'required|integer',
+            'usdBalance' => 'required|integer',
         ]);
 
         if ($validator->fails()) {
@@ -49,17 +42,21 @@ class UserController extends Controller
                 'message' => $validator->errors()->first()], 400);
         }
 
-        $example = new User;
-        $example->name = $request->name;
-        $example->email = $request->email;
-        $example->phoneNumber = $request->phoneNumber;
-        $example->password = Hash::make($request->password);
-        $example->role = $request->role;
-        $example->verified = $request->verified;
-        $example->email = $request->email;
-        $example->lbpBalance = $request->lbpBalance;
-        $example->usdBalance = $request->usdBalance;
-        $example->save();
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phoneNumber' => $request->phoneNumber,
+            'password' => Hash::make($request->password),
+            'role' => $request->role ?? 'resellerB',
+            'verified' => $request->verified ?? 0,
+            'lbpBalance' => $request->lbpBalance ?? 100000,
+            'usdBalance' => $request->usdBalance ?? 10,
+            'limitPurchaseLbp' => $request->limitPurchaseLbp ?? 5000000,
+            'limitPurchaseUsd' => $request->limitPurchaseUsd ?? 100,
+        ]);
+
+   
+        $token = Auth::login( $user );
 
         return response()->json([
             'status' => true,
@@ -135,7 +132,7 @@ class UserController extends Controller
                 'status' => false,
                 'message' => 'User failed to update'], 404);
         }
-
+        
         $example->name = $request->name ?? $example->name;
         $example->email = $request->email ?? $example->email;
         $example->phoneNumber = $request->phoneNumber ?? $example->phoneNumber;
@@ -144,13 +141,14 @@ class UserController extends Controller
         $example->email = $request->email ?? $example->email;
         $example->lbpBalance = $request->lbpBalance ?? $example->lbpBalance;
         $example->usdBalance = $request->usdBalance ?? $example->usdBalance;
+        $example->limitPurchaseLbp = $request->limitPurchaseLbp ?? $example->limitPurchaseLbp;
+        $example->limitPurchaseUsd = $request->limitPurchaseUsd ?? $example->limitPurchaseUsd;
         $example->save();
 
         return response()->json([
             'status' => true,
             'message' => 'Successfully updated user'], 200);
     }
-
 
     public function destroy($id) // delete data
     {
@@ -178,4 +176,25 @@ class UserController extends Controller
                 'message'=>"Users Deleted successfully."
             ],200);   
     }
+
+    public function setLimitLBP(Request $request){
+        $setLimitPurchaseLbp = $request->input('setLimitLbp') ;
+        User::query()->update(['limitPurchaseLbp' => $setLimitPurchaseLbp]);
+
+        return response()->json([
+            'message'=>"New Lbp limit of $setLimitPurchaseLbp has been set.",
+            'status' => true
+        ],200);   
     }
+
+    public function setLimitUSD(Request $request){
+        $setLimitPurchaseUsd = $request->input('setLimitUsd') ;
+        User::query()->update(['limitPurchaseUsd' => $setLimitPurchaseUsd]);
+
+        return response()->json([
+            'message'=>"New Usd limit of $setLimitPurchaseUsd has been set.",
+            'status' => true
+        ],200);   
+    }
+
+}
