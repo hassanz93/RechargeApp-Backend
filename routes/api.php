@@ -40,6 +40,7 @@ Route::patch('admin/user/{id}', [UserController::class, 'update']);
 Route::delete('admin/user/{id}', [UserController::class, 'destroy']);
 Route::patch('admin/setlimit/Lbp', [UserController::class, 'setLimitLBP']);
 Route::patch('admin/setlimit/Usd', [UserController::class, 'setLimitUSD']);
+Route::patch('resellerA/transfer/{id}', [UserController::class, 'resellerATransferBalance']);
 
 Route::get('main/home', [HomeController:: class, 'index']);
 

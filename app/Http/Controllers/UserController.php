@@ -197,4 +197,36 @@ class UserController extends Controller
         ],200);   
     }
 
+    public function resellerATransferBalance(Request $request, $id){
+        
+        $user = Auth::user();
+        $example = User::find($id);
+
+        if ($request->usdBalance <= $user->usdBalance && $request->lbpBalance <= $user->lbpBalance  ){
+        $user->usdBalance = $user->usdBalance - $request->usdBalance;
+        $user->lbpBalance = $user->lbpBalance - $request->lbpBalance;
+
+        $example->usdBalance = $request->usdBalance + $example->usdBalance  ?? $example->usdBalance;
+        $example->lbpBalance = $request->lbpBalance + $example->lbpBalance  ?? $example->lbpBalance;
+
+        $user->save();
+        $example->save();
+
+        return response()->json([
+            'message'=>"Credit has been to transfered",
+            'status' => true
+        ],200); 
+
+        }
+
+        else {
+            return response()->json([
+                'message'=>"Not enough Usd/Lbp balance to transfer",
+                'status' => false
+            ],200); 
+        }
+
+    
+}
+
 }
