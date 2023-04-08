@@ -213,7 +213,7 @@ class UserController extends Controller
         $example->save();
 
         return response()->json([
-            'message'=>"Credit has been to transfered",
+            'message'=>"Credit has been transfered",
             'status' => true
         ],200); 
 

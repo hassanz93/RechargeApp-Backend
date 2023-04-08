@@ -10,6 +10,8 @@ use App\Http\Controllers\PhoneCardsDetailsController;
 use App\Http\Controllers\PhoneCardIndividualController;
 use App\Http\Controllers\TransactionHistoryController;
 use App\Http\Controllers\ExchangeRateController;
+use App\Http\Controllers\CommentsController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -70,6 +72,11 @@ Route::post('admin/transactionsHistory', [TransactionHistoryController:: class, 
 
 Route::get('admin/exchangeRate', [ExchangeRateController:: class, 'index']);
 Route::patch('admin/exchangeRate/{id}', [ExchangeRateController:: class, 'update']);
+
+//Comments
+Route::get('admin/comments', [CommentsController::class, 'getComments']);
+Route::get('admin/comment' , [CommentsController::class, 'getLastComment']);
+Route::post('admin/comment', [CommentsController:: class, 'store']);
 
 
 
