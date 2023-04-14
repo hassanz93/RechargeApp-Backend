@@ -52,7 +52,7 @@ class AuthController extends Controller
             $request->validate([
                 'mainResellerId' => 'required|integer',
                 'name' => 'required|string|max:255',
-                'email' => 'string|email|max:255|unique:users',
+                'email' =>'sometimes|required|email|max:155|unique:users' ,
                 'phoneNumber' => 'required|digits:8|unique:users',
                 'password' => 'required|string|min:6',
                 'role' => 'in:resellerB, manager, resellerA, SuperAdmin',
@@ -66,7 +66,7 @@ class AuthController extends Controller
             $user = User::create([
                 'mainResellerId' => $request->mainResellerId,
                 'name' => $request->name,
-                'email' => $request->email,
+                'email' => $request->email ?? '',
                 'phoneNumber' => $request->phoneNumber,
                 'password' => Hash::make($request->password),
                 'role' => $request->role ?? 'resellerB',

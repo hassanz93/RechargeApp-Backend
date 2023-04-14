@@ -5,14 +5,15 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 use App\Models\Comments;
 
 class CommentsController extends Controller
 {
-    public function getComments()  // show one
+    public function getComments()
     
     {
-        $allComments = Comments::all();
+        $allComments = Comments::where('created_at', '>', Carbon::now()->subWeek())->orderBy('created_at', 'desc')->get();
 
         return response()->json([
             'status' => true,

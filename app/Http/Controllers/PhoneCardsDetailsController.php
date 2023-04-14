@@ -41,7 +41,7 @@ class PhoneCardsDetailsController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'categoryId' => Rule::in([1,2]),
-            'type' => Rule::in(['Magic','Start','Smart','Alpha']),
+            'type' => Rule::in(['Magic','Start','Smart','Alfa']),
             'dollarPrice' => 'required|integer',
             'validity' => 'required|integer',
             'grace' => 'required|integer',
@@ -77,7 +77,7 @@ class PhoneCardsDetailsController extends Controller
     $validator = Validator::make($request->all(), [
         'name' => 'string',
         'categoryId' => Rule::in([1,2]),
-        'type' => Rule::in(['Magic','Start','Smart','Alpha']),
+        'type' => Rule::in(['Magic','Start','Smart','Alfa']),
         'dollarPrice' => 'integer',
         'validity' => 'integer',
         'grace' => 'integer',
@@ -108,7 +108,7 @@ class PhoneCardsDetailsController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'string|max:255',
             'categoryId' => Rule::in([1,2]),
-            'type' => Rule::in(['Magic','Start','Smart','Alpha']),
+            'type' => Rule::in(['Magic','Start','Smart','Alfa']),
             'dollarPrice' => 'integer',
             'validity' => 'integer',
             'grace' => 'integer',

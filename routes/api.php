@@ -40,6 +40,8 @@ Route::post('admin/userCSV', [UserController::class, 'addCsv']);
 Route::get('admin/user/{id}', [UserController::class, 'show']);
 Route::patch('admin/user/{id}', [UserController::class, 'update']);
 Route::delete('admin/user/{id}', [UserController::class, 'destroy']);
+Route::get('register/phoneNumber/{phoneNumber}', [UserController::class, 'getUserPhoneNumber'])->withoutMiddleware(['csrf']);
+
 Route::patch('admin/setlimit/Lbp', [UserController::class, 'setLimitLBP']);
 Route::patch('admin/setlimit/Usd', [UserController::class, 'setLimitUSD']);
 Route::patch('resellerA/transfer/{id}', [UserController::class, 'resellerATransferBalance']);
@@ -69,6 +71,8 @@ Route::get('admin/PurchaseCardDetails/{id}/{quantity}', [PhoneCardIndividualCont
 Route::get('admin/transactionsHistory', [TransactionHistoryController:: class, 'index']);
 Route::get('admin/transactionsHistory/{id}' , [TransactionHistoryController::class, 'showId']);
 Route::post('admin/transactionsHistory', [TransactionHistoryController:: class, 'store']);
+Route::get('admin/transactionsHistoryMonth/{month}', [TransactionHistoryController:: class, 'showMonth']);
+Route::get('admin/transactionsHistoryMonthforUser/{month}', [TransactionHistoryController:: class, 'showMonthById']);
 
 Route::get('admin/exchangeRate', [ExchangeRateController:: class, 'index']);
 Route::patch('admin/exchangeRate/{id}', [ExchangeRateController:: class, 'update']);

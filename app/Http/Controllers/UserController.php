@@ -16,11 +16,28 @@ class UserController extends Controller
  
     public function index()  // show all
     {
-        $user = User::all();
+        $user = User::whereNotIn('role', ['SuperAdmin'])->get();
 
         return response()->json([
             'status' => true,
             'data' => $user], 201);
+    }
+
+    public function getUserPhoneNumber($phoneNumber)
+    {
+        $resellerA = User::where('role', 'resellerA')->where('phoneNumber', $phoneNumber)->select(['id', 'name' ])->first();
+
+        if ( $resellerA){
+        return response()->json([
+            'status' => true,
+            'data' => $resellerA,
+            'message' => 'ResellerA Exists'], 201);
+        }
+        else {
+            return response()->json([
+                'status' => false,
+                'message' => 'ResellerA does not exist'], 201);
+            }
     }
 
     public function store(Request $request)  // save data

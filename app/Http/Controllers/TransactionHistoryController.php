@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use DB;
 
 class TransactionHistoryController extends Controller
@@ -23,13 +23,33 @@ class TransactionHistoryController extends Controller
 
     public function showId($id)  // show one
     {
-        $historyDetails = TransactionHistory::all();
-
-        $history = collect($historyDetails)->where('userId', $id)->all();
+        $history = TransactionHistory::where('userId', $id)->get();
 
         return response()->json([
             'status' => true,
             'data' => $history], 201);
+    }
+
+    public function showMonth($month)
+    {
+        $historyByMonth = TransactionHistory::whereMonth('created_at', $month)->get();
+
+        return response()->json([
+            'status' => true,
+            'data' => $historyByMonth
+      ], 201);
+    }
+
+    public function showMonthById($month)
+    {
+        $user = Auth::user()->id;
+
+        $historyByMonthById = TransactionHistory::where('userId', $user)->whereMonth('created_at', $month)->get();
+
+        return response()->json([
+            'status' => true,
+            'data' => $historyByMonthById
+      ], 201);
     }
 
     public function store(Request $request)  // save data
