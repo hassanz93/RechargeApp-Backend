@@ -47,7 +47,6 @@ Route::patch('admin/setlimit/Usd', [UserController::class, 'setLimitUSD']);
 Route::patch('resellerA/transfer/{id}', [UserController::class, 'resellerATransferBalance']);
 
 Route::get('main/home', [HomeController:: class, 'index']);
-
 Route::get('main/phoneCardCategory', [PhoneCardsCatgeoryController:: class, 'index']);
 
 //  Card Details that are shown to clients to sell
@@ -66,6 +65,7 @@ Route::patch('admin/IndividualCardDetails/{id}', [PhoneCardIndividualController:
 Route::patch('admin/PurchaseCardDetailsStatus/{id}', [PhoneCardIndividualController:: class, 'purchaseStatus']);
 Route::delete('admin/IndividualCardDetails/{id}', [PhoneCardIndividualController:: class, 'destroy']);
 Route::get('admin/PurchaseCardDetails/{id}/{quantity}', [PhoneCardIndividualController:: class, 'purchase']);
+Route::get('admin/getByUserPurchased', [PhoneCardIndividualController:: class, 'getByUserPurchased']);
 
 // Transactions History
 Route::get('admin/transactionsHistory', [TransactionHistoryController:: class, 'index']);

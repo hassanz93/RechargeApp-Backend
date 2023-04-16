@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 
 class PhoneCardIndividualController extends Controller
 {
@@ -80,7 +81,7 @@ class PhoneCardIndividualController extends Controller
 public function purchaseStatus(Request $request, $id){
 
   $validator = Validator::make($request->all(), [
-        'status' => Rule::in(['Sold'])
+        'status' => Rule::in(['Sold']),
     ]);
 
     if ($validator->fails()) {
@@ -90,6 +91,7 @@ public function purchaseStatus(Request $request, $id){
     }
 
      $example = PhoneCardIndividual::find($id);
+     $user = Auth::user()->id;
 
         if (!$example) {
             return response()->json([
@@ -98,11 +100,14 @@ public function purchaseStatus(Request $request, $id){
         }
 
         $example->status=$request->status;
+        $example->userSoldId = $user;
         $example->save();
 
         return response()->json([
             'status' => true,
-            'message' => 'Successfully purchased card'], 200);
+            'message' => 'Successfully purchased card',
+            'data' => $user,
+        ], 200);
 }
 
 
@@ -158,16 +163,6 @@ public function purchaseStatus(Request $request, $id){
     }
 
 
-    public function destroyMultiple(Request $request){
-
-        PhoneCardIndividual::destroy($request->ids);
-
-        return response()->json([
-            'status' => true,
-            'message'=>"Items Deleted successfully."
-        ],200);   
-    }
-
         public function purchase( $id, $quantity) {
 
             $example = PhoneCardIndividual::where('status', 'Available')
@@ -178,9 +173,19 @@ public function purchaseStatus(Request $request, $id){
         ->get();
 
   
-    return response()->json([
+        return response()->json([
         'status' => true,
         'data' =>  $example], 200);
 
+    }
+
+    public function getByUserPurchased(){
+        $userId = Auth::user()->id;
+
+        $example = PhoneCardIndividual::where('userSoldId',  $userId )->get();
+
+        return response()->json([
+            'status' => true,
+            'data' =>  $example], 200);
     }
 }
