@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 
 class AuthController extends Controller
@@ -17,7 +18,7 @@ class AuthController extends Controller
     public function login( Request $request ){
 
         $request->validate([
-            'phoneNumber' => 'required|digits:8',
+            'phoneNumber' => 'required|string|size:8',
             'password' => 'required|string',
         ]);
 
@@ -42,6 +43,7 @@ class AuthController extends Controller
                     'authorisation' => [
                         'token' => $token,
                         'type' => 'bearer',
+                        'expires_in' => auth()->factory()->getTTL() * 60
                     ]
                 ])
             ]); 
@@ -53,7 +55,7 @@ class AuthController extends Controller
                 'mainResellerId' => 'required|integer',
                 'name' => 'required|string|max:255',
                 'email' =>'sometimes|required|email|max:155|unique:users' ,
-                'phoneNumber' => 'required|digits:8|unique:users',
+                'phoneNumber' => 'required|string|size:8|unique:users',
                 'password' => 'required|string|min:6',
                 'role' => 'in:resellerB, manager, resellerA, SuperAdmin',
                 'verified' => 'boolean',
@@ -71,10 +73,10 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password),
                 'role' => $request->role ?? 'resellerB',
                 'verified' => $request->verified ?? 0,
-                'lbpBalance' => $request->lbpBalance ?? 100000,
-                'usdBalance' => $request->usdBalance ?? 10,
-                'limitPurchaseLbp' => $request->limitPurchaseLbp ?? 5000000,
-                'limitPurchaseUsd' => $request->limitPurchaseUsd ?? 100,
+                'lbpBalance' => $request->lbpBalance ?? 0,
+                'usdBalance' => $request->usdBalance ?? 0,
+                'limitPurchaseLbp' => $request->limitPurchaseLbp ?? 0,
+                'limitPurchaseUsd' => $request->limitPurchaseUsd ?? 0,
             ]);
             
             $token = Auth::login( $user );
@@ -111,9 +113,38 @@ class AuthController extends Controller
                         'authorisation' => [
                         'token' => Auth::refresh(),
                         'type' => 'bearer',
+                        'expires_in' => auth()->factory()->getTTL() * 60
                     ]
                 ])
             ]);
         }
+
+        public function password(Request $request){
+
+            # Validation
+            $validator = Validator::make($request->all(), [
+                'oldPassword'=>'string|required',
+                'newPassword'=>'string|required|confirmed',
+            ]);
+
+
+        #Match The Old Password
+        if(!Hash::check($request->oldPassword, auth()->user()->password)){
+            return response()->json([
+                'status' => false,
+                'message' => 'Old Password entered is incorrect',
+            ]);
+            }
+
+        #Update the new Password
+        User::whereId(auth()->user()->id)->update([
+            'password' => Hash::make($request->newPassword)
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Password updated',
+        ]);
+    }
 }
             

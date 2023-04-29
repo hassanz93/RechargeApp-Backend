@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Carbon\Carbon;
 
 class PhoneCardsDetailsController extends Controller
 {
@@ -28,7 +29,7 @@ class PhoneCardsDetailsController extends Controller
         $indivDetails = PhoneCardIndividual::all();
         $indivDetails1 = [];
         for($id = 1;$id <= $indivDetailsCount;$id++){
-            $indivDetails1[$id-1] = collect($indivDetails)->where('status', 'Available')->where('cardDetailsId', $id);
+            $indivDetails1[$id-1] = collect($indivDetails)->where('status', 'Available')->where('cardDetailsId', $id)->where('expiryDate', '>' , date('Y-m-d'));
         }
 
         return response()->json([

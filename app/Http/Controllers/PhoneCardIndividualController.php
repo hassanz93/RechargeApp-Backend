@@ -13,8 +13,8 @@ class PhoneCardIndividualController extends Controller
 {
     public function index()  // show all
     {
-        $cardDetail = PhoneCardIndividual::all();
-        $cardDetail ->makeHidden(['code']);
+        $cardDetail = PhoneCardIndividual::where('expiryDate','>=', date('Y-m-d'))->orderBy('expiryDate')->get();
+        $cardDetail->makeHidden(['code']);
         return response()->json([
             'status' => true,
             'data' => $cardDetail], 201);
