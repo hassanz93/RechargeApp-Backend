@@ -20,7 +20,7 @@ class UserController extends Controller
 
         return response()->json([
             'status' => true,
-            'data' => $user], 201);
+            'data' => $user], 200);
     }
 
     public function getUserPhoneNumber($phoneNumber)
@@ -31,12 +31,12 @@ class UserController extends Controller
         return response()->json([
             'status' => true,
             'data' => $resellerA,
-            'message' => 'ResellerA Exists'], 201);
+            'message' => 'ResellerA Exists'], 200);
         }
         else {
             return response()->json([
                 'status' => false,
-                'message' => 'ResellerA does not exist'], 201);
+                'message' => 'ResellerA does not exist'], 200);
             }
     }
 
@@ -45,7 +45,7 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'string|email|max:255|unique:users',
-            'phoneNumber' => 'required|digits:8|unique:users',
+            'phoneNumber' => 'required|string|size:8|unique:users',
             'password' => 'required|string|min:6',
             'role' => Rule::in(['resellerA', 'manager', 'resellerB']),
             'verified' => 'required|boolean',
@@ -77,7 +77,7 @@ class UserController extends Controller
 
         return response()->json([
             'status' => true,
-            'message' => 'Successfully created user'], 201);
+            'message' => 'Successfully created user'], 200);
     }
 
     public function addCsv(Request $request)
@@ -86,7 +86,7 @@ class UserController extends Controller
     $validator = Validator::make($request->all(), [
         'name' => 'string|max:255',
         'email' => 'string|email|max:255|unique:users',
-        'phoneNumber' => 'digits:8|unique:users',
+        'phoneNumber' => 'string|size:8|unique:users',
         'password' => 'string|min:6',
         'role' => Rule::in(['resellerA', 'manager', 'resellerB']),
         'verified' => 'boolean',
@@ -119,13 +119,13 @@ class UserController extends Controller
         if (!$example) {
             return response()->json([
                 'status' => false,
-                'message' => 'User not found'], 404);
+                'message' => 'User not found'], 400);
         }
 
         return response()->json([
             'status' => true,
             'message' => 'User found',
-            'data' => $example ], 201);
+            'data' => $example ], 200);
     }
 
  
@@ -134,7 +134,8 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'string|max:255',
             'email' => 'string|email|max:255|unique:users',
-            'phoneNumber' => 'digits:8|unique:users',
+            'phoneNumber' => 'string|size:8|unique:users',
+            'password' => 'string|min:6',
             'role' => Rule::in(['resellerA', 'manager', 'resellerB']),
             'verified' => 'boolean',
             'lbpBalance' => 'integer',
@@ -147,12 +148,13 @@ class UserController extends Controller
         if (!$example) {
             return response()->json([
                 'status' => false,
-                'message' => 'User failed to update'], 404);
+                'message' => 'User failed to update'], 400);
         }
         
         $example->name = $request->name ?? $example->name;
         $example->email = $request->email ?? $example->email;
         $example->phoneNumber = $request->phoneNumber ?? $example->phoneNumber;
+        $example->password = Hash::make($request->password) ?? $example->password;
         $example->role = $request->role ?? $example->role;
         $example->verified = $request->verified ?? $example->verified;
         $example->email = $request->email ?? $example->email;
@@ -174,7 +176,7 @@ class UserController extends Controller
         if (!$example) {
             return response()->json([
                 'status' => false,
-                'message' => `User can't be deleted`], 404);
+                'message' => `User can't be deleted`], 400);
         }
 
         $example->delete();
@@ -242,8 +244,6 @@ class UserController extends Controller
                 'status' => false
             ],200); 
         }
-
-    
 }
 
 }

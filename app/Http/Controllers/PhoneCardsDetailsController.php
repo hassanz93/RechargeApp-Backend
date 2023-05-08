@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Carbon\Carbon;
 
 class PhoneCardsDetailsController extends Controller
 {
@@ -25,10 +26,10 @@ class PhoneCardsDetailsController extends Controller
     public function getstock()
     {
         $indivDetailsCount = PhoneCardIndividual::all()->count();
-        $indivDetails = PhoneCardIndividual::all();
+        $indivDetails = PhoneCardIndividual::all()->makeHidden(['code', 'userSoldId', 'transactionId']);
         $indivDetails1 = [];
         for($id = 1;$id <= $indivDetailsCount;$id++){
-            $indivDetails1[$id-1] = collect($indivDetails)->where('status', 'Available')->where('cardDetailsId', $id);
+            $indivDetails1[$id-1] = collect($indivDetails)->where('status', 'Available')->where('cardDetailsId', $id)->where('expiryDate', '>' , date('Y-m-d'));
         }
 
         return response()->json([
@@ -42,11 +43,13 @@ class PhoneCardsDetailsController extends Controller
             'name' => 'required|string|max:255',
             'categoryId' => Rule::in([1,2]),
             'type' => Rule::in(['Magic','Start','Smart','Alfa']),
-            'dollarPrice' => 'required|integer',
+            'dollarPrice' => 'required|numeric',
+            'percentageSale' => 'required|numeric',
             'validity' => 'required|integer',
             'grace' => 'required|integer',
             'show' => Rule::in(['Enable','Disable']),
-            'lowQuantity' => 'required|integer'
+            'lowQuantity' => 'required|integer',
+            'imageUrl' => 'required|string|max:350'
         ]);
 
         if ($validator->fails()) {
@@ -60,10 +63,12 @@ class PhoneCardsDetailsController extends Controller
         $example->categoryId = $request->categoryId;
         $example->type = $request->type;
         $example->dollarPrice =$request->dollarPrice;
+        $example->percentageSale =$request->percentageSale;
         $example->validity = $request->validity;
         $example->grace = $request->grace;
         $example->show = $request->show;
         $example->lowQuantity = $request->lowQuantity;
+        $example->imageUrl = $request->imageUrl;
         $example->save();
 
         return response()->json([
@@ -78,11 +83,13 @@ class PhoneCardsDetailsController extends Controller
         'name' => 'string',
         'categoryId' => Rule::in([1,2]),
         'type' => Rule::in(['Magic','Start','Smart','Alfa']),
-        'dollarPrice' => 'integer',
+        'dollarPrice' => 'numeric',
+        'percentageSale' => 'numeric',
         'validity' => 'integer',
         'grace' => 'integer',
         'show' => Rule::in(['Enable','Disable']),
-        'lowQuantity' => 'required|integer'
+        'lowQuantity' => 'integer',
+        'imageUrl' => 'string|max:350'
     ]);
 
     if ($validator->fails()) {
@@ -109,11 +116,13 @@ class PhoneCardsDetailsController extends Controller
             'name' => 'string|max:255',
             'categoryId' => Rule::in([1,2]),
             'type' => Rule::in(['Magic','Start','Smart','Alfa']),
-            'dollarPrice' => 'integer',
+            'dollarPrice' => 'numeric',
+            'percentageSale' => 'numeric',
             'validity' => 'integer',
             'grace' => 'integer',
             'show' => Rule::in(['Enable','Disable']),
-            'lowQuantity' => 'required|integer'
+            'lowQuantity' => 'integer',
+            'imageUrl' => 'string|max:350'
         ]);
 
         if ($validator->fails()) {
@@ -135,10 +144,12 @@ class PhoneCardsDetailsController extends Controller
         $example->categoryId = $request->categoryId ?? $example->categoryId;
         $example->type = $request->type ?? $example->type;
         $example->dollarPrice = $request->dollarPrice ?? $example->dollarPrice;
+        $example->percentageSale = $request->percentageSale ?? $example->percentageSale;
         $example->validity = $request->validity ?? $example->validity;
         $example->grace = $request->grace ?? $example->grace;
         $example->show = $request->show ?? $example->show;
-        $example->lowQuantity = $request->lowQuantity;
+        $example->lowQuantity = $request->lowQuantity ?? $example->lowQuantity;
+        $example->imageUrl = $request->imageUrl ?? $example->imageUrl;
         $example->save();
 
         return response()->json([

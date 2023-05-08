@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -16,44 +18,58 @@ class AuthController extends Controller
     
     public function login( Request $request ){
 
-        $request->validate([
-            'phoneNumber' => 'required|digits:8',
-            'password' => 'required|string',
+        $validator = Validator::make($request->all(), [
+            'phoneNumber' => 'required|string',
+            'password' => 'required|string'
         ]);
 
-        $credentials = $request->only( 'phoneNumber', 'password' );
-
-        $token = Auth::attempt( $credentials );
-        
-        if ( !$token ){
-            return response()->json([
-                'status' => false,
-                'message' => 'Unauthorized, try to login again',
-            ], 401 );
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
         }
-        
-        $user = Auth::user();
+
+        $credentials = $request->only('phoneNumber', 'password');
+
+    
+        $user = User::where('phoneNumber', $credentials['phoneNumber'])->first();
+        $hashedPassword = $user->password;
+
+        if (!$user) {
+            return response()->json(['message' => 'Invalid phone number'], 401);
+        }
+
+        if (!Hash::check($credentials['password'], $hashedPassword)) {
+            return response()->json(['message' => 'Invalid password'], 401);
+        }
+
+
+            $token = JWTAuth::fromUser($user, [
+                'expires_in' => 60
+            ]);
+
+        $expires_in = (time() + 3600);
 
         return response()->json([
             'status' => true,
             'message' => 'Login Successfully',
-            'data' => json_encode([
+            'data' => json_encode( [
                 'user' => $user,
-                    'authorisation' => [
-                        'token' => $token,
-                        'type' => 'bearer',
-                    ]
-                ])
-            ]); 
-        }
-        
+                'authorisation' => [
+                    'token' => $token,
+                    'type' => 'bearer',
+                    'expires_in' => $expires_in
+            ]
+            ])
+        ], 200);
+    }
+
+
         public function register( Request $request ){
 
-            $request->validate([
+            $validator = Validator::make($request->all(),[
                 'mainResellerId' => 'required|integer',
                 'name' => 'required|string|max:255',
                 'email' =>'sometimes|required|email|max:155|unique:users' ,
-                'phoneNumber' => 'required|digits:8|unique:users',
+                'phoneNumber' => 'required|string|size:8|unique:users',
                 'password' => 'required|string|min:6',
                 'role' => 'in:resellerB, manager, resellerA, SuperAdmin',
                 'verified' => 'boolean',
@@ -62,6 +78,10 @@ class AuthController extends Controller
                 'limitPurchaseLbp' => 'integer',
                 'limitPurchaseUsd' => 'integer'
             ]);
+
+            if ($validator->fails()) {
+                return response()->json($validator->errors(), 400);
+            }
             
             $user = User::create([
                 'mainResellerId' => $request->mainResellerId,
@@ -71,25 +91,19 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password),
                 'role' => $request->role ?? 'resellerB',
                 'verified' => $request->verified ?? 0,
-                'lbpBalance' => $request->lbpBalance ?? 100000,
-                'usdBalance' => $request->usdBalance ?? 10,
-                'limitPurchaseLbp' => $request->limitPurchaseLbp ?? 5000000,
-                'limitPurchaseUsd' => $request->limitPurchaseUsd ?? 100,
+                'lbpBalance' => $request->lbpBalance ?? 0,
+                'usdBalance' => $request->usdBalance ?? 0,
+                'limitPurchaseLbp' => $request->limitPurchaseLbp ?? 0,
+                'limitPurchaseUsd' => $request->limitPurchaseUsd ?? 0,
             ]);
-            
-            $token = Auth::login( $user );
 
             return response()->json([
                 'status' => true,
-                'message' => 'userCreated',
+                'message' => 'User Created',
                 'data' => json_encode([
                     'user' => $user,
-                    'authorisation' => [
-                        'token' => $token,
-                        'type' => 'bearer',
-                    ]
-                ])
-            ]);
+            ])
+        ]);
         }
             
         public function logout(){
@@ -102,18 +116,33 @@ class AuthController extends Controller
             ]);
         }
             
-        public function refresh(){
+ 
+        public function password(Request $request){
 
-            return response()->json([
-                'status' => true,
-                'user' => Auth::user(),
-                    'data' => json_encode([
-                        'authorisation' => [
-                        'token' => Auth::refresh(),
-                        'type' => 'bearer',
-                    ]
-                ])
+            # Validation
+            $validator = Validator::make($request->all(), [
+                'oldPassword'=>'string|required',
+                'newPassword'=>'string|required|confirmed',
             ]);
-        }
+
+
+        #Match The Old Password
+        if(!Hash::check($request->oldPassword, auth()->user()->password)){
+            return response()->json([
+                'status' => false,
+                'message' => 'Old Password entered is incorrect',
+            ]);
+            }
+
+        #Update the new Password
+        User::whereId(auth()->user()->id)->update([
+            'password' => Hash::make($request->newPassword)
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Password updated',
+        ]);
+    }
 }
             
