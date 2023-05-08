@@ -14,7 +14,7 @@ class PhoneCardIndividualController extends Controller
     public function index()  // show all
     {
         $cardDetail = PhoneCardIndividual::where('expiryDate','>=', date('Y-m-d'))->orderBy('expiryDate')->get();
-        $cardDetail->makeHidden(['code']);
+        $cardDetail->makeHidden(['code', 'transactionId', 'userSoldId' ]);
         return response()->json([
             'status' => true,
             'data' => $cardDetail], 201);
@@ -101,12 +101,12 @@ public function purchaseStatus(Request $request, $id){
 
         $example->status=$request->status;
         $example->userSoldId = $user;
+        $example->transactionId = $request->transactionId;
         $example->save();
 
         return response()->json([
             'status' => true,
             'message' => 'Successfully purchased card',
-            'data' => $user,
         ], 200);
 }
 
@@ -166,6 +166,7 @@ public function purchaseStatus(Request $request, $id){
         public function purchase( $id, $quantity) {
 
             $example = PhoneCardIndividual::where('status', 'Available')
+        ->where('expiryDate','>=', date('Y-m-d'))
         ->where('cardDetailsId', $id) 
         ->orderBy('expiryDate') // assuming you want to order by expiryDate
         ->select(['id', 'serial', 'code', 'cardDetailsId', 'expiryDate' ])

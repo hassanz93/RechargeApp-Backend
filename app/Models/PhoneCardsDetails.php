@@ -15,10 +15,12 @@ class PhoneCardsDetails extends Model
         'categoryId',
         'type',
         'dollarPrice',
+        'percentageSale',
         'validity' ,
         'purchaseQuantity',
         'grace',
         'show',
-        'lowQuantity'
+        'lowQuantity',
+        'imageUrl'
     ];
 }

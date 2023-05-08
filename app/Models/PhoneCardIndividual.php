@@ -12,6 +12,7 @@ class PhoneCardIndividual extends Model
     protected $fillable = [
         'name',
         'userSoldId',
+        'transactionId',
         'cardDetailsId',
         'code',
         'expiryDate',

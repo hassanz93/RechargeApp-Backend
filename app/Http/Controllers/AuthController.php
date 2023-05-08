@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -17,41 +18,54 @@ class AuthController extends Controller
     
     public function login( Request $request ){
 
-        $request->validate([
-            'phoneNumber' => 'required|string|size:8',
-            'password' => 'required|string',
+        $validator = Validator::make($request->all(), [
+            'phoneNumber' => 'required|string',
+            'password' => 'required|string'
         ]);
 
-        $credentials = $request->only( 'phoneNumber', 'password' );
-
-        $token = Auth::attempt( $credentials );
-        
-        if ( !$token ){
-            return response()->json([
-                'status' => false,
-                'message' => 'Unauthorized, try to login again',
-            ], 401 );
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
         }
-        
-        $user = Auth::user();
+
+        $credentials = $request->only('phoneNumber', 'password');
+
+    
+        $user = User::where('phoneNumber', $credentials['phoneNumber'])->first();
+        $hashedPassword = $user->password;
+
+        if (!$user) {
+            return response()->json(['message' => 'Invalid phone number'], 401);
+        }
+
+        if (!Hash::check($credentials['password'], $hashedPassword)) {
+            return response()->json(['message' => 'Invalid password'], 401);
+        }
+
+
+            $token = JWTAuth::fromUser($user, [
+                'expires_in' => 60
+            ]);
+
+        $expires_in = (time() + 3600);
 
         return response()->json([
             'status' => true,
             'message' => 'Login Successfully',
-            'data' => json_encode([
+            'data' => json_encode( [
                 'user' => $user,
-                    'authorisation' => [
-                        'token' => $token,
-                        'type' => 'bearer',
-                        'expires_in' => auth()->factory()->getTTL() * 60
-                    ]
-                ])
-            ]); 
-        }
-        
+                'authorisation' => [
+                    'token' => $token,
+                    'type' => 'bearer',
+                    'expires_in' => $expires_in
+            ]
+            ])
+        ], 200);
+    }
+
+
         public function register( Request $request ){
 
-            $request->validate([
+            $validator = Validator::make($request->all(),[
                 'mainResellerId' => 'required|integer',
                 'name' => 'required|string|max:255',
                 'email' =>'sometimes|required|email|max:155|unique:users' ,
@@ -64,6 +78,10 @@ class AuthController extends Controller
                 'limitPurchaseLbp' => 'integer',
                 'limitPurchaseUsd' => 'integer'
             ]);
+
+            if ($validator->fails()) {
+                return response()->json($validator->errors(), 400);
+            }
             
             $user = User::create([
                 'mainResellerId' => $request->mainResellerId,
@@ -78,20 +96,14 @@ class AuthController extends Controller
                 'limitPurchaseLbp' => $request->limitPurchaseLbp ?? 0,
                 'limitPurchaseUsd' => $request->limitPurchaseUsd ?? 0,
             ]);
-            
-            $token = Auth::login( $user );
 
             return response()->json([
                 'status' => true,
-                'message' => 'userCreated',
+                'message' => 'User Created',
                 'data' => json_encode([
                     'user' => $user,
-                    'authorisation' => [
-                        'token' => $token,
-                        'type' => 'bearer',
-                    ]
-                ])
-            ]);
+            ])
+        ]);
         }
             
         public function logout(){
@@ -104,21 +116,7 @@ class AuthController extends Controller
             ]);
         }
             
-        public function refresh(){
-
-            return response()->json([
-                'status' => true,
-                'user' => Auth::user(),
-                    'data' => json_encode([
-                        'authorisation' => [
-                        'token' => Auth::refresh(),
-                        'type' => 'bearer',
-                        'expires_in' => auth()->factory()->getTTL() * 60
-                    ]
-                ])
-            ]);
-        }
-
+ 
         public function password(Request $request){
 
             # Validation

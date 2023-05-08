@@ -31,7 +31,6 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
     Route::post('register', 'register');
     Route::post('logout', 'logout');
-    Route::post('refresh', 'refresh');
     Route::post('password', 'password');
 });
 
@@ -71,6 +70,8 @@ Route::get('admin/getByUserPurchased', [PhoneCardIndividualController:: class, '
 // Transactions History
 Route::get('admin/transactionsHistory', [TransactionHistoryController:: class, 'index']);
 Route::get('admin/transactionsHistory/{id}' , [TransactionHistoryController::class, 'showId']);
+Route::get('admin/showTransactionId/{id}/{cardId}' , [TransactionHistoryController::class, 'showTransactionId']);
+Route::get('admin/lastTransactionId' , [TransactionHistoryController::class, 'showLatestPurchaseId']);
 Route::post('admin/transactionsHistory', [TransactionHistoryController:: class, 'store']);
 Route::get('admin/transactionsHistoryMonth/{month}', [TransactionHistoryController:: class, 'showMonth']);
 Route::get('admin/transactionsHistoryMonthforUser/{month}', [TransactionHistoryController:: class, 'showMonthById']);
