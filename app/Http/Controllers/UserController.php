@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -25,18 +26,18 @@ class UserController extends Controller
 
     public function getUserPhoneNumber($phoneNumber)
     {
-        $resellerA = User::where('role', 'resellerA')->where('phoneNumber', $phoneNumber)->select(['id', 'name' ])->first();
+        $Agent = User::where('role', 'Agent')->where('phoneNumber', $phoneNumber)->select(['id', 'name' ])->first();
 
-        if ( $resellerA){
+        if ( $Agent){
         return response()->json([
             'status' => true,
-            'data' => $resellerA,
-            'message' => 'ResellerA Exists'], 200);
+            'data' => $Agent,
+            'message' => 'Agent Exists'], 200);
         }
         else {
             return response()->json([
                 'status' => false,
-                'message' => 'ResellerA does not exist'], 200);
+                'message' => 'Agent does not exist'], 200);
             }
     }
 
@@ -47,10 +48,10 @@ class UserController extends Controller
             'email' => 'string|email|max:255|unique:users',
             'phoneNumber' => 'required|string|size:8|unique:users',
             'password' => 'required|string|min:6',
-            'role' => Rule::in(['resellerA', 'manager', 'resellerB']),
+            'role' => Rule::in(['Agent','Operator','Reseller']),
             'verified' => 'required|boolean',
-            'lbpBalance' => 'required|integer',
-            'usdBalance' => 'required|integer',
+            'lbpBalance' => 'integer',
+            'usdBalance' => 'integer',
         ]);
 
         if ($validator->fails()) {
@@ -64,12 +65,14 @@ class UserController extends Controller
             'email' => $request->email,
             'phoneNumber' => $request->phoneNumber,
             'password' => Hash::make($request->password),
-            'role' => $request->role ?? 'resellerB',
+            'role' => $request->role ?? 'Reseller',
             'verified' => $request->verified ?? 0,
-            'lbpBalance' => $request->lbpBalance ?? 100000,
-            'usdBalance' => $request->usdBalance ?? 10,
-            'limitPurchaseLbp' => $request->limitPurchaseLbp ?? 5000000,
-            'limitPurchaseUsd' => $request->limitPurchaseUsd ?? 100,
+            'lbpBalance' => $request->lbpBalance ?? 0,
+            'usdBalance' => $request->usdBalance ?? 0,
+            'limitPurchaseLbp' => $request->limitPurchaseLbp ?? 0,
+            'limitPurchaseUsd' => $request->limitPurchaseUsd ?? 0,
+            'topUpUsd' => $request->topUpUsd ?? 0,
+            'topUpLbp' => $request->topUpLbp ?? 0,
         ]);
 
    
@@ -79,38 +82,6 @@ class UserController extends Controller
             'status' => true,
             'message' => 'Successfully created user'], 200);
     }
-
-    public function addCsv(Request $request)
-{
-
-    $validator = Validator::make($request->all(), [
-        'name' => 'string|max:255',
-        'email' => 'string|email|max:255|unique:users',
-        'phoneNumber' => 'string|size:8|unique:users',
-        'password' => 'string|min:6',
-        'role' => Rule::in(['resellerA', 'manager', 'resellerB']),
-        'verified' => 'boolean',
-        'lbpBalance' => 'integer',
-        'usdBalance' => 'integer',
-    ]);
-
-    if ($validator->fails()) {
-        return response()->json([
-            'status' => false,
-            'message' => $validator->errors()->first()], 400);
-    }
-
-    $users = $request->json()->all();
-    
-    foreach ($users as $user) {
-        User::create($user);
-    }
-
-    return response()->json([
-        'status' => true,
-        'message' => 'All Users have been added'], 201);
-}
-
 
     public function show($id) // save one data
     {
@@ -136,7 +107,7 @@ class UserController extends Controller
             'email' => 'string|email|max:255|unique:users',
             'phoneNumber' => 'string|size:8|unique:users',
             'password' => 'string|min:6',
-            'role' => Rule::in(['resellerA', 'manager', 'resellerB']),
+            'role' => Rule::in(['Agent','Operator','Reseller']),
             'verified' => 'boolean',
             'lbpBalance' => 'integer',
             'usdBalance' => 'integer',
@@ -162,6 +133,8 @@ class UserController extends Controller
         $example->usdBalance = $request->usdBalance ?? $example->usdBalance;
         $example->limitPurchaseLbp = $request->limitPurchaseLbp ?? $example->limitPurchaseLbp;
         $example->limitPurchaseUsd = $request->limitPurchaseUsd ?? $example->limitPurchaseUsd;
+        $example->topUpUsd = $request->topUpUsd ?? $example->topUpUsd;
+        $example->topUpLbp = $request->topUpLbp ?? $example->topUpLbp;
         $example->save();
 
         return response()->json([
@@ -216,23 +189,41 @@ class UserController extends Controller
         ],200);   
     }
 
-    public function resellerATransferBalance(Request $request, $id){
+    public function adminTransferBalance(Request $request, $id){
+        
+        $example = User::find($id);
+
+        $example->usdBalance = $request->usdBalance + $example->usdBalance ?? $example->usdBalance;
+        $example->lbpBalance = $request->lbpBalance + $example->lbpBalance ?? $example->lbpBalance;
+
+        $example->save();
+
+   
+
+        return response()->json([
+            'message'=>"Credit has been transfered to agent",
+            'status' => true
+        ],200); 
+
+}
+
+    public function agentTransferBalance(Request $request, $id){
         
         $user = Auth::user();
         $example = User::find($id);
 
-        if ($request->usdBalance <= $user->usdBalance && $request->lbpBalance <= $user->lbpBalance  ){
-        $user->usdBalance = $user->usdBalance - $request->usdBalance;
-        $user->lbpBalance = $user->lbpBalance - $request->lbpBalance;
+        if ($request->usdBalance <= $user->topUpUsd && $request->lbpBalance <= $user->topUpLbp  ){
+        $user->topUpUsd = $user->topUpUsd - $request->usdBalance;
+        $user->topUpLbp = $user->topUpLbp - $request->lbpBalance;
 
-        $example->usdBalance = $request->usdBalance + $example->usdBalance  ?? $example->usdBalance;
-        $example->lbpBalance = $request->lbpBalance + $example->lbpBalance  ?? $example->lbpBalance;
+        $example->usdBalance = $request->usdBalance + $example->usdBalance ?? $example->usdBalance;
+        $example->lbpBalance = $request->lbpBalance + $example->lbpBalance ?? $example->lbpBalance;
 
         $user->save();
         $example->save();
 
         return response()->json([
-            'message'=>"Credit has been transfered",
+            'message'=>"Credit has been transfered to reseller",
             'status' => true
         ],200); 
 
@@ -240,10 +231,11 @@ class UserController extends Controller
 
         else {
             return response()->json([
-                'message'=>"Not enough Usd/Lbp balance to transfer",
+                'message'=>"Not enough Usd/Lbp balance to transfer to reseller",
                 'status' => false
             ],200); 
         }
+
 }
 
 }

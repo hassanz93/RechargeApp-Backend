@@ -33,6 +33,8 @@ class User extends Authenticatable implements JWTSubject
         'usdBalance',
         'limitPurchaseLbp',
         'limitPurchaseUsd',
+        'topUpUsd',
+        'topUpLbp'
     ];
 
     /**

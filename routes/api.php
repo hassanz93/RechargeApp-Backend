@@ -11,6 +11,7 @@ use App\Http\Controllers\PhoneCardIndividualController;
 use App\Http\Controllers\TransactionHistoryController;
 use App\Http\Controllers\ExchangeRateController;
 use App\Http\Controllers\CommentsController;
+use App\Http\Controllers\TopUpTransferController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,7 +37,6 @@ Route::controller(AuthController::class)->group(function () {
 
 Route::get('admin/user' , [UserController::class, 'index']);
 Route::post('admin/user', [UserController::class, 'store']);
-Route::post('admin/userCSV', [UserController::class, 'addCsv']);
 Route::get('admin/user/{id}', [UserController::class, 'show']);
 Route::patch('admin/user/{id}', [UserController::class, 'update']);
 Route::delete('admin/user/{id}', [UserController::class, 'destroy']);
@@ -44,10 +44,15 @@ Route::get('register/phoneNumber/{phoneNumber}', [UserController::class, 'getUse
 
 Route::patch('admin/setlimit/Lbp', [UserController::class, 'setLimitLBP']);
 Route::patch('admin/setlimit/Usd', [UserController::class, 'setLimitUSD']);
-Route::patch('resellerA/transfer/{id}', [UserController::class, 'resellerATransferBalance']);
+Route::patch('agent/transfer/{id}', [UserController::class, 'agentTransferBalance']);
+Route::patch('admin/transfer/{id}', [UserController::class, 'adminTransferBalance']);
 
 Route::get('main/home', [HomeController:: class, 'index']);
+
 Route::get('main/phoneCardCategory', [PhoneCardsCatgeoryController:: class, 'index']);
+Route::post('main/phoneCardCategory', [PhoneCardsCatgeoryController:: class, 'store']);
+Route::patch('main/phoneCardCategory/{id}', [PhoneCardsCatgeoryController:: class, 'update']);
+Route::delete('main/phoneCardCategory/{id}', [PhoneCardsCatgeoryController:: class, 'destroy']);
 
 //  Card Details that are shown to clients to sell
 Route::get('admin/phoneCardDetails', [PhoneCardsDetailsController:: class, 'index']);
@@ -76,8 +81,15 @@ Route::post('admin/transactionsHistory', [TransactionHistoryController:: class, 
 Route::get('admin/transactionsHistoryMonth/{month}', [TransactionHistoryController:: class, 'showMonth']);
 Route::get('admin/transactionsHistoryMonthforUser/{month}', [TransactionHistoryController:: class, 'showMonthById']);
 
+Route::get('admin/topup', [TopUpTransferController:: class, 'index'] );
+Route::get('agent/topup/{id}', [TopUpTransferController:: class, 'getByAgent'] );
+Route::post('admin/topup', [TopUpTransferController:: class, 'adminTransferHistory'] );
+Route::post('agent/topup', [TopUpTransferController:: class, 'agentTransferHistory'] );
+Route::get('admin/topupfilter/{month}', [TopUpTransferController:: class, 'showMonthAdmin'] );
+Route::get('agent/topupfilter/{month}', [TopUpTransferController:: class, 'showMonthByAgent'] );
+
 Route::get('admin/exchangeRate', [ExchangeRateController:: class, 'index']);
-Route::patch('admin/exchangeRate/{id}', [ExchangeRateController:: class, 'update']);
+Route::patch('agent/exchangeRate/{id}', [ExchangeRateController:: class, 'update']);
 
 //Comments
 Route::get('admin/comments', [CommentsController::class, 'getComments']);

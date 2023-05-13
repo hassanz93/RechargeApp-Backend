@@ -44,7 +44,6 @@ class PhoneCardsDetailsController extends Controller
             'categoryId' => Rule::in([1,2]),
             'type' => Rule::in(['Magic','Start','Smart','Alfa']),
             'dollarPrice' => 'required|numeric',
-            'percentageSale' => 'required|numeric',
             'validity' => 'required|integer',
             'grace' => 'required|integer',
             'show' => Rule::in(['Enable','Disable']),
@@ -63,7 +62,6 @@ class PhoneCardsDetailsController extends Controller
         $example->categoryId = $request->categoryId;
         $example->type = $request->type;
         $example->dollarPrice =$request->dollarPrice;
-        $example->percentageSale =$request->percentageSale;
         $example->validity = $request->validity;
         $example->grace = $request->grace;
         $example->show = $request->show;
@@ -84,7 +82,6 @@ class PhoneCardsDetailsController extends Controller
         'categoryId' => Rule::in([1,2]),
         'type' => Rule::in(['Magic','Start','Smart','Alfa']),
         'dollarPrice' => 'numeric',
-        'percentageSale' => 'numeric',
         'validity' => 'integer',
         'grace' => 'integer',
         'show' => Rule::in(['Enable','Disable']),
@@ -117,7 +114,6 @@ class PhoneCardsDetailsController extends Controller
             'categoryId' => Rule::in([1,2]),
             'type' => Rule::in(['Magic','Start','Smart','Alfa']),
             'dollarPrice' => 'numeric',
-            'percentageSale' => 'numeric',
             'validity' => 'integer',
             'grace' => 'integer',
             'show' => Rule::in(['Enable','Disable']),
@@ -144,7 +140,6 @@ class PhoneCardsDetailsController extends Controller
         $example->categoryId = $request->categoryId ?? $example->categoryId;
         $example->type = $request->type ?? $example->type;
         $example->dollarPrice = $request->dollarPrice ?? $example->dollarPrice;
-        $example->percentageSale = $request->percentageSale ?? $example->percentageSale;
         $example->validity = $request->validity ?? $example->validity;
         $example->grace = $request->grace ?? $example->grace;
         $example->show = $request->show ?? $example->show;
