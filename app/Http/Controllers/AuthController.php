@@ -43,10 +43,10 @@ class AuthController extends Controller
 
 
             $token = JWTAuth::fromUser($user, [
-                'expires_in' => 60
+                'expires_in' => 0
             ]);
 
-        $expires_in = (time() + 3600);
+        $expires_in = ('infinite');
 
         return response()->json([
             'status' => true,
