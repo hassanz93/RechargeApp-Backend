@@ -193,8 +193,8 @@ class UserController extends Controller
         
         $example = User::find($id);
 
-        $example->usdBalance = $request->usdBalance + $example->usdBalance ?? $example->usdBalance;
-        $example->lbpBalance = $request->lbpBalance + $example->lbpBalance ?? $example->lbpBalance;
+        $example->topUpUsd = $request->topUpUsd + $example->topUpUsd ?? $example->topUpUsd;
+        $example->topUpLbp = $request->topUpLbp + $example->topUpLbp ?? $example->topUpLbp;
 
         $example->save();
 

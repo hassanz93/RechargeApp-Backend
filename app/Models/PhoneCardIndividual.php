@@ -10,7 +10,7 @@ class PhoneCardIndividual extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
+        'serial',
         'userSoldId',
         'transactionId',
         'cardDetailsId',

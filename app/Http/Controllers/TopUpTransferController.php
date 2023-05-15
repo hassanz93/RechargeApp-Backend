@@ -7,6 +7,7 @@ use App\Models\AgentTopupHistory;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 
 class TopUpTransferController extends Controller
@@ -80,5 +81,69 @@ class TopUpTransferController extends Controller
 
         return response()->json([
             'status' => true], 200);
+    }
+
+    public function updateAdmin(Request $request, $id)  // update data
+    {
+        $validator = Validator::make($request->all(), [
+            'receivedMoney' => 'integer',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => $validator-> errors()->first()], 400);
+        }
+
+        $example = AdminTopupHistory::find($id);
+
+        if (!$example) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Top up failed to update'], 404);
+        }
+        if ($example->receivedMoney === 0){
+        $example->receivedMoney = 1;
+        }
+        else if ($example->receivedMoney === 1){
+            $example->receivedMoney = 0;
+        }
+        $example->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Successfully updated Top up'], 200);
+    }
+
+    public function updateAgent(Request $request, $id)  // update data
+    {
+        $validator = Validator::make($request->all(), [
+            'receivedMoney' => 'integer',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => $validator-> errors()->first()], 400);
+        }
+
+        $example = AgentTopupHistory::find($id);
+
+        if (!$example) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Top up failed to update'], 404);
+        }
+        if ($example->receivedMoney === 0){
+        $example->receivedMoney = 1;
+        }
+        else if ($example->receivedMoney === 1){
+            $example->receivedMoney = 0;
+        }
+        $example->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Successfully updated Top up'], 200);
     }
 }

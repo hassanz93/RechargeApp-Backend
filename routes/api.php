@@ -58,7 +58,6 @@ Route::delete('main/phoneCardCategory/{id}', [PhoneCardsCatgeoryController:: cla
 Route::get('admin/phoneCardDetails', [PhoneCardsDetailsController:: class, 'index']);
 Route::get('admin/phoneCardStock', [PhoneCardsDetailsController:: class, 'getstock']);
 Route::post('admin/phoneCardDetails', [PhoneCardsDetailsController:: class, 'store']);
-Route::post('admin/userCSV', [PhoneCardsDetailsController::class, 'addCsv']);
 Route::patch('admin/phoneCardDetails/{id}', [PhoneCardsDetailsController:: class, 'update']);
 Route::delete('admin/phoneCardDetails/{id}', [PhoneCardsDetailsController:: class, 'destroy']);
 
@@ -87,6 +86,8 @@ Route::post('admin/topup', [TopUpTransferController:: class, 'adminTransferHisto
 Route::post('agent/topup', [TopUpTransferController:: class, 'agentTransferHistory'] );
 Route::get('admin/topupfilter/{month}', [TopUpTransferController:: class, 'showMonthAdmin'] );
 Route::get('agent/topupfilter/{month}', [TopUpTransferController:: class, 'showMonthByAgent'] );
+Route::patch('admin/topup/{id}', [TopUpTransferController:: class, 'updateAdmin'] );
+Route::patch('agent/topup/{id}', [TopUpTransferController:: class, 'updateAgent'] );
 
 Route::get('admin/exchangeRate', [ExchangeRateController:: class, 'index']);
 Route::patch('agent/exchangeRate/{id}', [ExchangeRateController:: class, 'update']);
