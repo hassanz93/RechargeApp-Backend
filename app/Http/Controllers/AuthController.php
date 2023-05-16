@@ -41,12 +41,11 @@ class AuthController extends Controller
             return response()->json(['message' => 'Invalid password'], 401);
         }
 
-
             $token = JWTAuth::fromUser($user, [
-                'expires_in' => 60
+                'expires_in' => 0
             ]);
 
-        $expires_in = (time() + 3600);
+        $expires_in = ('infinite');
 
         return response()->json([
             'status' => true,
@@ -71,12 +70,14 @@ class AuthController extends Controller
                 'email' =>'sometimes|required|email|max:155|unique:users' ,
                 'phoneNumber' => 'required|string|size:8|unique:users',
                 'password' => 'required|string|min:6',
-                'role' => 'in:resellerB, manager, resellerA, SuperAdmin',
+                'role' => 'in:Reseller, Operator, Agent, SuperAdmin',
                 'verified' => 'boolean',
                 'lbpBalance' => 'integer',
                 'usdBalance' => 'integer',
                 'limitPurchaseLbp' => 'integer',
-                'limitPurchaseUsd' => 'integer'
+                'limitPurchaseUsd' => 'integer',
+                'topUpUsd' =>'integer',
+                'topUpLbp' => 'integer',
             ]);
 
             if ($validator->fails()) {
@@ -89,12 +90,14 @@ class AuthController extends Controller
                 'email' => $request->email ?? '',
                 'phoneNumber' => $request->phoneNumber,
                 'password' => Hash::make($request->password),
-                'role' => $request->role ?? 'resellerB',
+                'role' => $request->role ?? 'Reseller',
                 'verified' => $request->verified ?? 0,
                 'lbpBalance' => $request->lbpBalance ?? 0,
                 'usdBalance' => $request->usdBalance ?? 0,
                 'limitPurchaseLbp' => $request->limitPurchaseLbp ?? 0,
                 'limitPurchaseUsd' => $request->limitPurchaseUsd ?? 0,
+                'topUpUsd' => $request->topUpUsd ?? 0,
+                'topUpLbp' => $request->topUpLbp ?? 0,
             ]);
 
             return response()->json([

@@ -5,12 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PhoneCardsCategory extends Model
+class AdminTopupHistory extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'category',
-        'percentageSale',
-    ];
+        'agentId',
+        'topUpUsd',
+        'topUpLbp',
+        'receivedMoney',
+     ];
 }

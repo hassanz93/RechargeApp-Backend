@@ -44,12 +44,12 @@ class PhoneCardsDetailsController extends Controller
             'categoryId' => Rule::in([1,2]),
             'type' => Rule::in(['Magic','Start','Smart','Alfa']),
             'dollarPrice' => 'required|numeric',
-            'percentageSale' => 'required|numeric',
             'validity' => 'required|integer',
             'grace' => 'required|integer',
             'show' => Rule::in(['Enable','Disable']),
             'lowQuantity' => 'required|integer',
-            'imageUrl' => 'required|string|max:350'
+            'imageUrl' => 'required|string|max:350',
+            'currencySoldIn' => Rule::in(['Dollar','Lira']),
         ]);
 
         if ($validator->fails()) {
@@ -63,52 +63,18 @@ class PhoneCardsDetailsController extends Controller
         $example->categoryId = $request->categoryId;
         $example->type = $request->type;
         $example->dollarPrice =$request->dollarPrice;
-        $example->percentageSale =$request->percentageSale;
         $example->validity = $request->validity;
         $example->grace = $request->grace;
         $example->show = $request->show;
         $example->lowQuantity = $request->lowQuantity;
         $example->imageUrl = $request->imageUrl;
+        $example->currencySoldIn = $request->currencySoldIn;
         $example->save();
 
         return response()->json([
             'status' => true,
             'message' => 'Successfully created item'], 201);
     }
-
-    public function addCsv(Request $request)
-{
-
-    $validator = Validator::make($request->all(), [
-        'name' => 'string',
-        'categoryId' => Rule::in([1,2]),
-        'type' => Rule::in(['Magic','Start','Smart','Alfa']),
-        'dollarPrice' => 'numeric',
-        'percentageSale' => 'numeric',
-        'validity' => 'integer',
-        'grace' => 'integer',
-        'show' => Rule::in(['Enable','Disable']),
-        'lowQuantity' => 'integer',
-        'imageUrl' => 'string|max:350'
-    ]);
-
-    if ($validator->fails()) {
-        return response()->json([
-            'status' => false,
-            'message' => $validator->errors()->first()], 400);
-    }
-
-    $cards = $request->json()->all();
-    
-    foreach ($cards as $card) {
-        PhoneCardsDetails::create($card);
-    }
-
-    return response()->json([
-        'status' => true,
-        'message' => 'All Cards have been added'], 201);
-}
-
 
     public function update(Request $request, $id)  // update data
     {
@@ -117,12 +83,12 @@ class PhoneCardsDetailsController extends Controller
             'categoryId' => Rule::in([1,2]),
             'type' => Rule::in(['Magic','Start','Smart','Alfa']),
             'dollarPrice' => 'numeric',
-            'percentageSale' => 'numeric',
             'validity' => 'integer',
             'grace' => 'integer',
             'show' => Rule::in(['Enable','Disable']),
             'lowQuantity' => 'integer',
-            'imageUrl' => 'string|max:350'
+            'imageUrl' => 'string|max:350',
+            'currencySoldIn' => Rule::in(['Dollar','Lira']),
         ]);
 
         if ($validator->fails()) {
@@ -144,12 +110,12 @@ class PhoneCardsDetailsController extends Controller
         $example->categoryId = $request->categoryId ?? $example->categoryId;
         $example->type = $request->type ?? $example->type;
         $example->dollarPrice = $request->dollarPrice ?? $example->dollarPrice;
-        $example->percentageSale = $request->percentageSale ?? $example->percentageSale;
         $example->validity = $request->validity ?? $example->validity;
         $example->grace = $request->grace ?? $example->grace;
         $example->show = $request->show ?? $example->show;
         $example->lowQuantity = $request->lowQuantity ?? $example->lowQuantity;
         $example->imageUrl = $request->imageUrl ?? $example->imageUrl;
+        $example->currencySoldIn = $request->currencySoldIn ?? $example->currencySoldIn;
         $example->save();
 
         return response()->json([
