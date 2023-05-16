@@ -41,7 +41,6 @@ class AuthController extends Controller
             return response()->json(['message' => 'Invalid password'], 401);
         }
 
-
             $token = JWTAuth::fromUser($user, [
                 'expires_in' => 0
             ]);

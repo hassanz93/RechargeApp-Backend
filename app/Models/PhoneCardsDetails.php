@@ -20,6 +20,7 @@ class PhoneCardsDetails extends Model
         'grace',
         'show',
         'lowQuantity',
-        'imageUrl'
+        'imageUrl',
+        'currencySoldIn'
     ];
 }
