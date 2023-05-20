@@ -18,34 +18,17 @@ class AuthController extends Controller
     
     public function login( Request $request ){
 
-        $validator = Validator::make($request->all(), [
-            'phoneNumber' => 'required|string',
+         $credentials = $request->validate([
+           'phoneNumber' => 'required|string',
             'password' => 'required|string'
-        ]);
+    ]);
 
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 400);
-        }
+        if (!Auth::attempt($credentials)) {
+        return response()->json(['error' => 'Invalid credentials'], 401);
+    }
 
-        $credentials = $request->only('phoneNumber', 'password');
-
-    
-        $user = User::where('phoneNumber', $credentials['phoneNumber'])->first();
-        $hashedPassword = $user->password;
-
-        if (!$user) {
-            return response()->json(['message' => 'Invalid phone number'], 401);
-        }
-
-        if (!Hash::check($credentials['password'], $hashedPassword)) {
-            return response()->json(['message' => 'Invalid password'], 401);
-        }
-
-            $token = JWTAuth::fromUser($user, [
-                'expires_in' => 0
-            ]);
-
-        $expires_in = ('infinite');
+    $user = Auth::user();
+    $token = JWTAuth::fromUser($user);
 
         return response()->json([
             'status' => true,
@@ -55,7 +38,6 @@ class AuthController extends Controller
                 'authorisation' => [
                     'token' => $token,
                     'type' => 'bearer',
-                    'expires_in' => $expires_in
             ]
             ])
         ], 200);
@@ -74,10 +56,6 @@ class AuthController extends Controller
                 'verified' => 'boolean',
                 'lbpBalance' => 'integer',
                 'usdBalance' => 'integer',
-                'limitPurchaseLbp' => 'integer',
-                'limitPurchaseUsd' => 'integer',
-                'topUpUsd' =>'integer',
-                'topUpLbp' => 'integer',
             ]);
 
             if ($validator->fails()) {
@@ -111,6 +89,7 @@ class AuthController extends Controller
             
         public function logout(){
 
+             // Revoke the token but keep it valid until it expires
             Auth::logout();
 
             return response()->json([
