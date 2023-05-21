@@ -24,23 +24,6 @@ class UserController extends Controller
             'data' => $user], 200);
     }
 
-    public function getUserPhoneNumber($phoneNumber)
-    {
-        $Agent = User::where('role', 'Agent')->where('phoneNumber', $phoneNumber)->select(['id', 'name' ])->first();
-
-        if ( $Agent){
-        return response()->json([
-            'status' => true,
-            'data' => $Agent,
-            'message' => 'Agent Exists'], 200);
-        }
-        else {
-            return response()->json([
-                'status' => false,
-                'message' => 'Agent does not exist'], 200);
-            }
-    }
-
     public function store(Request $request)  // save data
     {
         $validator = Validator::make($request->all(), [
@@ -49,7 +32,7 @@ class UserController extends Controller
             'phoneNumber' => 'required|string|size:8|unique:users',
             'password' => 'required|string|min:6',
             'role' => Rule::in(['Agent','Operator','Reseller']),
-            'verified' => 'required|boolean',
+            'verified' => 'required|integer',
             'lbpBalance' => 'integer',
             'usdBalance' => 'integer',
         ]);
@@ -108,7 +91,7 @@ class UserController extends Controller
             'phoneNumber' => 'string|size:8|unique:users',
             'password' => 'string|min:6',
             'role' => Rule::in(['Agent','Operator','Reseller']),
-            'verified' => 'boolean',
+            'verified' => 'integer',
             'lbpBalance' => 'integer',
             'usdBalance' => 'integer',
         ]);
@@ -125,7 +108,6 @@ class UserController extends Controller
         $example->name = $request->name ?? $example->name;
         $example->email = $request->email ?? $example->email;
         $example->phoneNumber = $request->phoneNumber ?? $example->phoneNumber;
-        $example->password = Hash::make($request->password) ?? $example->password;
         $example->role = $request->role ?? $example->role;
         $example->verified = $request->verified ?? $example->verified;
         $example->email = $request->email ?? $example->email;
@@ -135,6 +117,11 @@ class UserController extends Controller
         $example->limitPurchaseUsd = $request->limitPurchaseUsd ?? $example->limitPurchaseUsd;
         $example->topUpUsd = $request->topUpUsd ?? $example->topUpUsd;
         $example->topUpLbp = $request->topUpLbp ?? $example->topUpLbp;
+
+        if ($request->password !== null && $request->password !== '' ) {
+            $example->password = Hash::make($request->password);
+        }
+
         $example->save();
 
         return response()->json([
@@ -167,26 +154,6 @@ class UserController extends Controller
             return response()->json([
                 'message'=>"Users Deleted successfully."
             ],200);   
-    }
-
-    public function setLimitLBP(Request $request){
-        $setLimitPurchaseLbp = $request->input('setLimitLbp') ;
-        User::query()->update(['limitPurchaseLbp' => $setLimitPurchaseLbp]);
-
-        return response()->json([
-            'message'=>"New Lbp limit of $setLimitPurchaseLbp has been set.",
-            'status' => true
-        ],200);   
-    }
-
-    public function setLimitUSD(Request $request){
-        $setLimitPurchaseUsd = $request->input('setLimitUsd') ;
-        User::query()->update(['limitPurchaseUsd' => $setLimitPurchaseUsd]);
-
-        return response()->json([
-            'message'=>"New Usd limit of $setLimitPurchaseUsd has been set.",
-            'status' => true
-        ],200);   
     }
 
     public function adminTransferBalance(Request $request, $id){

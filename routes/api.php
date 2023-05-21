@@ -40,10 +40,10 @@ Route::post('admin/user', [UserController::class, 'store']);
 Route::get('admin/user/{id}', [UserController::class, 'show']);
 Route::patch('admin/user/{id}', [UserController::class, 'update']);
 Route::delete('admin/user/{id}', [UserController::class, 'destroy']);
-Route::get('register/phoneNumber/{phoneNumber}', [UserController::class, 'getUserPhoneNumber'])->withoutMiddleware(['csrf']);
 
-Route::patch('admin/setlimit/Lbp', [UserController::class, 'setLimitLBP']);
-Route::patch('admin/setlimit/Usd', [UserController::class, 'setLimitUSD']);
+Route::patch('admin/setlimit/Lbp', [LimitPurchaseController::class, 'setLimitLBP']);
+Route::patch('admin/setlimit/Usd', [LimitPurchaseController::class, 'setLimitUSD']);
+
 Route::patch('agent/transfer/{id}', [UserController::class, 'agentTransferBalance']);
 Route::patch('admin/transfer/{id}', [UserController::class, 'adminTransferBalance']);
 
@@ -70,6 +70,7 @@ Route::patch('admin/PurchaseCardDetailsStatus/{id}', [PhoneCardIndividualControl
 Route::delete('admin/IndividualCardDetails/{id}', [PhoneCardIndividualController:: class, 'destroy']);
 Route::get('admin/PurchaseCardDetails/{id}/{quantity}', [PhoneCardIndividualController:: class, 'purchase']);
 Route::get('admin/getByUserPurchased', [PhoneCardIndividualController:: class, 'getByUserPurchased']);
+Route::get('admin/getByUserPurchasedForAdmin', [PhoneCardIndividualController:: class, 'getByUserPurchasedForAdmin']);
 
 // Transactions History
 Route::get('admin/transactionsHistory', [TransactionHistoryController:: class, 'index']);
@@ -81,6 +82,7 @@ Route::get('admin/transactionsHistoryMonth/{month}', [TransactionHistoryControll
 Route::get('admin/transactionsHistoryMonthforUser/{month}', [TransactionHistoryController:: class, 'showMonthById']);
 
 Route::get('admin/topup', [TopUpTransferController:: class, 'index'] );
+Route::get('admin/topups', [TopUpTransferController:: class, 'getAllAgents'] );
 Route::get('agent/topup/{id}', [TopUpTransferController:: class, 'getByAgent'] );
 Route::post('admin/topup', [TopUpTransferController:: class, 'adminTransferHistory'] );
 Route::post('agent/topup', [TopUpTransferController:: class, 'agentTransferHistory'] );

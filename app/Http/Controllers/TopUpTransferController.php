@@ -21,6 +21,16 @@ class TopUpTransferController extends Controller
             'data' => $user], 200);
     }
 
+    public function getAllAgents()  // show all
+    {
+        $user = AgentTopupHistory::orderBy('id', 'desc')->get();
+
+        return response()->json([
+            'status' => true,
+            'data' => $user], 200);
+    }
+
+
     public function getByAgent($id)  // show all
     {
         $user = AgentTopupHistory::orderBy('id', 'desc')->where('agentId', $id )->get();
@@ -59,6 +69,8 @@ class TopUpTransferController extends Controller
         $example1->agentId = $request->agentId;
         $example1->topUpUsd =$request->topUpUsd;
         $example1->topUpLbp =$request->topUpLbp;
+        $example1->topUpUsdLeft =$request->topUpUsd;
+        $example1->topUpLbpLeft =$request->topUpLbp;
         $example1->receivedMoney =$request->receivedMoney;
         $example1->save();
 
@@ -76,6 +88,8 @@ class TopUpTransferController extends Controller
         $example1->resellerId = $request->resellerId;
         $example1->topUpUsd = $request->topUpUsd;
         $example1->topUpLbp = $request->topUpLbp;
+        $example1->topUpUsdLeft =$request->topUpUsd;
+        $example1->topUpLbpLeft =$request->topUpLbp;
         $example1->receivedMoney = $request->receivedMoney;
         $example1->save();
 
@@ -87,6 +101,8 @@ class TopUpTransferController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'receivedMoney' => 'integer',
+            'topUpUsdLeft' => 'integer',
+            'topUpLbpLeft' => 'integer',
         ]);
 
         if ($validator->fails()) {
@@ -102,12 +118,10 @@ class TopUpTransferController extends Controller
                 'status' => false,
                 'message' => 'Top up failed to update'], 404);
         }
-        if ($example->receivedMoney === 0){
-        $example->receivedMoney = 1;
-        }
-        else if ($example->receivedMoney === 1){
-            $example->receivedMoney = 0;
-        }
+    
+        $example->topUpUsdLeft = $request->topUpUsdLeft ?? $example->topUpUsdLeft;
+        $example->topUpLbpLeft = $request->topUpLbpLeft ?? $example->topUpLbpLeft;
+        $example->receivedMoney = $request->receivedMoney ?? $example->receivedMoney;
         $example->save();
 
         return response()->json([
@@ -119,6 +133,8 @@ class TopUpTransferController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'receivedMoney' => 'integer',
+            'topUpUsdLeft' => 'integer',
+            'topUpLbpLeft' => 'integer',
         ]);
 
         if ($validator->fails()) {
@@ -134,12 +150,10 @@ class TopUpTransferController extends Controller
                 'status' => false,
                 'message' => 'Top up failed to update'], 404);
         }
-        if ($example->receivedMoney === 0){
-        $example->receivedMoney = 1;
-        }
-        else if ($example->receivedMoney === 1){
-            $example->receivedMoney = 0;
-        }
+   
+        $example->topUpUsdLeft = $request->topUpUsdLeft ?? $example->topUpUsdLeft;
+        $example->topUpLbpLeft = $request->topUpLbpLeft ?? $example->topUpLbpLeft;
+        $example->receivedMoney = $request->receivedMoney ?? $example->receivedMoney;
         $example->save();
 
         return response()->json([

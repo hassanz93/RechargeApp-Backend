@@ -180,6 +180,16 @@ public function purchaseStatus(Request $request, $id){
 
     }
 
+    public function getByUserPurchasedForAdmin(){
+
+        $example = PhoneCardIndividual::where('userSoldId', '!=',  null )->get();
+
+        return response()->json([
+            'status' => true,
+            'data' =>  $example], 200);
+    }
+
+    
     public function getByUserPurchased(){
         $userId = Auth::user()->id;
 

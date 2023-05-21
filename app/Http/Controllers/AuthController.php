@@ -47,13 +47,12 @@ class AuthController extends Controller
         public function register( Request $request ){
 
             $validator = Validator::make($request->all(),[
-                'mainResellerId' => 'required|integer',
                 'name' => 'required|string|max:255',
                 'email' =>'sometimes|required|email|max:155|unique:users' ,
                 'phoneNumber' => 'required|string|size:8|unique:users',
                 'password' => 'required|string|min:6',
                 'role' => 'in:Reseller, Operator, Agent, SuperAdmin',
-                'verified' => 'boolean',
+                'verified' => 'integer',
                 'lbpBalance' => 'integer',
                 'usdBalance' => 'integer',
             ]);
@@ -63,7 +62,6 @@ class AuthController extends Controller
             }
             
             $user = User::create([
-                'mainResellerId' => $request->mainResellerId,
                 'name' => $request->name,
                 'email' => $request->email ?? '',
                 'phoneNumber' => $request->phoneNumber,

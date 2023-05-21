@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\User;
+use App\Models\LimitPurchase;
 
 class ResetLimit extends Command
 {
@@ -28,7 +29,10 @@ class ResetLimit extends Command
      */
     public function handle()
     {
-        User::query()->update(['limitPurchaseUsd' => 2000]);
-        User::query()->update(['limitPurchaseLbp' => 20000000]);
+        $lbp = LimitPurchase::first()->lbpLimit;
+        $usd = LimitPurchase::first()->usdLimit;
+
+        User::query()->update(['limitPurchaseUsd' => $usd]);
+        User::query()->update(['limitPurchaseLbp' => $lbp]);
     }
 }
