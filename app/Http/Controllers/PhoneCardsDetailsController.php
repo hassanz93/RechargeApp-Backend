@@ -25,23 +25,22 @@ class PhoneCardsDetailsController extends Controller
 
     public function getstock()
     {
-        $indivDetailsCount = PhoneCardIndividual::all()->count();
-        $indivDetails = PhoneCardIndividual::all()->makeHidden(['code', 'userSoldId', 'transactionId']);
-        $indivDetails1 = [];
-        for($id = 1;$id <= $indivDetailsCount;$id++){
-            $indivDetails1[$id-1] = collect($indivDetails)->where('status', 'Available')->where('cardDetailsId', $id)->where('expiryDate', '>' , date('Y-m-d'));
-        }
+        $indivDetails = PhoneCardIndividual::where('status', 'Available')
+        ->where('expiryDate', '>', date('Y-m-d'))
+        ->get(['*'])
+        ->makeHidden(['code', 'userSoldId', 'transactionId']);
+        
 
         return response()->json([
             'status' => true,
-            'data' => $indivDetails1], 201);
+            'data' => $indivDetails], 201);
     }
 
     public function store(Request $request)  // save data
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'categoryId' => Rule::in([1,2]),
+            'categoryId' => 'required|integer',
             'type' => Rule::in(['Magic','Start','Smart','Alfa']),
             'dollarPrice' => 'required|numeric',
             'validity' => 'required|integer',
@@ -80,7 +79,7 @@ class PhoneCardsDetailsController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'string|max:255',
-            'categoryId' => Rule::in([1,2]),
+            'categoryId' => 'required|integer',
             'type' => Rule::in(['Magic','Start','Smart','Alfa']),
             'dollarPrice' => 'numeric',
             'validity' => 'integer',

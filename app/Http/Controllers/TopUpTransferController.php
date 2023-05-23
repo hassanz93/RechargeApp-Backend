@@ -69,8 +69,16 @@ class TopUpTransferController extends Controller
         $example1->agentId = $request->agentId;
         $example1->topUpUsd =$request->topUpUsd;
         $example1->topUpLbp =$request->topUpLbp;
-        $example1->topUpUsdLeft =$request->topUpUsd;
-        $example1->topUpLbpLeft =$request->topUpLbp;
+       
+
+        if ($request->receivedMoney === 0){
+            $example1->topUpUsdLeft =$request->topUpUsd;
+            $example1->topUpLbpLeft =$request->topUpLbp;
+        }
+        else if ($request->receivedMoney === 1){
+            $example1->topUpUsdLeft =0;
+            $example1->topUpLbpLeft =0;
+        }
         $example1->receivedMoney =$request->receivedMoney;
         $example1->save();
 
