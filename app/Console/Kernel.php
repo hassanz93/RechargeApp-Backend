@@ -18,7 +18,7 @@ class Kernel extends ConsoleKernel
    
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('resetLimit:cron')->daily();
+        $schedule->command('resetLimit:cron')->dailyAt('00:00');
 
     }
 

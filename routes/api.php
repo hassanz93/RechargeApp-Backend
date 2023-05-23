@@ -41,8 +41,11 @@ Route::get('admin/user/{id}', [UserController::class, 'show']);
 Route::patch('admin/user/{id}', [UserController::class, 'update']);
 Route::delete('admin/user/{id}', [UserController::class, 'destroy']);
 
-Route::patch('admin/setlimit/Lbp', [LimitPurchaseController::class, 'setLimitLBP']);
-Route::patch('admin/setlimit/Usd', [LimitPurchaseController::class, 'setLimitUSD']);
+Route::get('admin/setlimit', [LimitPurchaseController::class, 'index']);
+Route::patch('admin/setlimit/reseller/lbp', [LimitPurchaseController::class, 'setLimitLBPReseller']);
+Route::patch('admin/setlimit/reseller/usd', [LimitPurchaseController::class, 'setLimitUSDReseller']);
+Route::patch('admin/setlimit/agent/lbp', [LimitPurchaseController::class, 'setLimitLBPAgent']);
+Route::patch('admin/setlimit/agent/usd', [LimitPurchaseController::class, 'setLimitUSDAgent']);
 
 Route::patch('agent/transfer/{id}', [UserController::class, 'agentTransferBalance']);
 Route::patch('admin/transfer/{id}', [UserController::class, 'adminTransferBalance']);
