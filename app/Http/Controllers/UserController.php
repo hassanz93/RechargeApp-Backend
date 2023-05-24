@@ -160,8 +160,8 @@ class UserController extends Controller
         
         $example = User::find($id);
 
-        $example->topUpUsd = $request->topUpUsd + $example->topUpUsd ?? $example->topUpUsd;
-        $example->topUpLbp = $request->topUpLbp + $example->topUpLbp ?? $example->topUpLbp;
+        $example->topUpUsd = $request->topUpUsd;
+        $example->topUpLbp = $request->topUpLbp;
 
         $example->save();
 
