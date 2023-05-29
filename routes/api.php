@@ -46,6 +46,8 @@ Route::patch('admin/setlimit/reseller/lbp', [LimitPurchaseController::class, 'se
 Route::patch('admin/setlimit/reseller/usd', [LimitPurchaseController::class, 'setLimitUSDReseller']);
 Route::patch('admin/setlimit/agent/lbp', [LimitPurchaseController::class, 'setLimitLBPAgent']);
 Route::patch('admin/setlimit/agent/usd', [LimitPurchaseController::class, 'setLimitUSDAgent']);
+Route::patch('admin/setlimit/oneAgent/{id}', [LimitPurchaseController::class, 'setAgentLimitOne']);
+
 
 Route::patch('agent/transfer/{id}', [UserController::class, 'agentTransferBalance']);
 Route::patch('admin/transfer/{id}', [UserController::class, 'adminTransferBalance']);
@@ -87,7 +89,6 @@ Route::get('admin/transactionsHistoryMonthforUser/{month}', [TransactionHistoryC
 Route::get('admin/topup', [TopUpTransferController:: class, 'index'] );
 Route::get('admin/topups', [TopUpTransferController:: class, 'getAllAgents'] );
 Route::get('agent/topup/{id}', [TopUpTransferController:: class, 'getByAgent'] );
-Route::post('admin/topup', [TopUpTransferController:: class, 'adminTransferHistory'] );
 Route::post('agent/topup', [TopUpTransferController:: class, 'agentTransferHistory'] );
 Route::get('admin/topupfilter/{month}', [TopUpTransferController:: class, 'showMonthAdmin'] );
 Route::get('agent/topupfilter/{month}', [TopUpTransferController:: class, 'showMonthByAgent'] );

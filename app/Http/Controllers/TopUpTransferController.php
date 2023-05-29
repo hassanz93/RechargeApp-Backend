@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\AdminTopupHistory;
 use App\Models\AgentTopupHistory;
+use App\Models\User;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -63,29 +65,6 @@ class TopUpTransferController extends Controller
       ], 201);
     }
 
-    public function adminTransferHistory(Request $request)  // show all
-    {
-        $example1 = new AdminTopupHistory;
-        $example1->agentId = $request->agentId;
-        $example1->topUpUsd =$request->topUpUsd;
-        $example1->topUpLbp =$request->topUpLbp;
-       
-
-        if ($request->receivedMoney === 0){
-            $example1->topUpUsdLeft =$request->topUpUsd;
-            $example1->topUpLbpLeft =$request->topUpLbp;
-        }
-        else if ($request->receivedMoney === 1){
-            $example1->topUpUsdLeft =0;
-            $example1->topUpLbpLeft =0;
-        }
-        $example1->receivedMoney =$request->receivedMoney;
-        $example1->save();
-
-        return response()->json([
-            'status' => true], 200);
-    }
-
     public function agentTransferHistory(Request $request)  // show all
     {
 
@@ -143,6 +122,8 @@ class TopUpTransferController extends Controller
             'receivedMoney' => 'integer',
             'topUpUsdLeft' => 'integer',
             'topUpLbpLeft' => 'integer',
+            'topUpUsd' => 'integer',
+            'topUpLbp' => 'integer'
         ]);
 
         if ($validator->fails()) {
@@ -163,6 +144,8 @@ class TopUpTransferController extends Controller
         $example->topUpLbpLeft = $request->topUpLbpLeft ?? $example->topUpLbpLeft;
         $example->receivedMoney = $request->receivedMoney ?? $example->receivedMoney;
         $example->save();
+
+    
 
         return response()->json([
             'status' => true,

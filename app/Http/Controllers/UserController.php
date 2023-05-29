@@ -146,26 +146,14 @@ class UserController extends Controller
             'message' => 'Successfully deleted user'], 200);
     }
 
-    public function destroyMultiple(Request $request){
-
-
-        User::destroy($request->ids);
-
-            return response()->json([
-                'message'=>"Users Deleted successfully."
-            ],200);   
-    }
-
     public function adminTransferBalance(Request $request, $id){
         
         $example = User::find($id);
 
-        $example->topUpUsd = $request->topUpUsd;
-        $example->topUpLbp = $request->topUpLbp;
+        $example->topUpUsd = $example->topUpUsd - $request->topUpUsd;
+        $example->topUpLbp = $example->topUpLbp - $request->topUpLbp;
 
         $example->save();
-
-   
 
         return response()->json([
             'message'=>"Credit has been transfered to agent",
@@ -179,9 +167,11 @@ class UserController extends Controller
         $user = Auth::user();
         $example = User::find($id);
 
-        if ($request->usdBalance <= $user->topUpUsd && $request->lbpBalance <= $user->topUpLbp  ){
-        $user->topUpUsd = $user->topUpUsd - $request->usdBalance;
-        $user->topUpLbp = $user->topUpLbp - $request->lbpBalance;
+        if ($request->usdBalance <= $user->limitPurchaseUsd && $request->lbpBalance <= $user->limitPurchaseLbp  ){
+        $user->limitPurchaseUsd = $user->limitPurchaseUsd - $request->usdBalance;
+        $user->limitPurchaseLbp = $user->limitPurchaseLbp - $request->lbpBalance;
+        $user->topUpUsd = $user->topUpUsd + $request->usdBalance ?? $user->topUpUsd ;
+        $user->topUpLbp = $user->topUpLbp + $request->lbpBalance ?? $user->topUpLbp ;
 
         $example->usdBalance = $request->usdBalance + $example->usdBalance ?? $example->usdBalance;
         $example->lbpBalance = $request->lbpBalance + $example->lbpBalance ?? $example->lbpBalance;

@@ -32,9 +32,6 @@ class ResetLimit extends Command
         $lbpReseller = LimitPurchase::first()->lbpLimitReseller;
         $usdReseller = LimitPurchase::first()->usdLimitReseller;
 
-        $lbpAgent = LimitPurchase::first()->lbpLimitAgent;
-        $usdAgent = LimitPurchase::first()->usdLimitAgent;
-
         User::query()->where('role', 'Reseller')->update(['limitPurchaseUsd' => $usdReseller]);
         User::query()->where('role', 'Reseller')->update(['limitPurchaseLbp' => $lbpReseller]);
 
